@@ -1,0 +1,35 @@
+﻿@model Pharmacy.ViewModels.ResendEmailConfirmationVM
+
+@{
+    ViewData["Title"] = "Resend Email Confirmation";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Resend Confirmation Link</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="ResendEmailConfirmation" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="UserNameOrEmail" class="form-label"></label>
+                        <input asp-for="UserNameOrEmail" class="form-control" placeholder="Enter your username or email" />
+                        <span asp-validation-for="UserNameOrEmail" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Send Confirmation Link</button>
+                        <a asp-action="Login" class="btn btn-outline-secondary">Back to Login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

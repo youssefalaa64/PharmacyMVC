@@ -1,0 +1,188 @@
+﻿@model Pharmacy.ViewModels.ApplicationUserVM
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile - Pharmacy Management System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+            body {
+                background-color: #f4f7f6;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            .pharmacy-header {
+                background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+                color: white;
+                padding: 2rem 0;
+                margin-bottom: 2rem;
+                border-bottom: 4px solid #0a58ca;
+            }
+            .card {
+                border: none;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            }
+            .card-header {
+                background-color: #ffffff;
+                border-bottom: 2px solid #f0f0f0;
+                font-weight: 600;
+            }
+            .btn-pharmacy {
+                background-color: #0d6efd;
+                color: white;
+                border-radius: 8px;
+            }
+            .btn-pharmacy:hover {
+                background-color: #0b5ed7;
+                color: white;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- Header Banner -->
+    <div class="pharmacy-header shadow-sm">
+        <div class="container text-center">
+            <h1><i class="bi bi-capsule"></i> Pharmacy Management System</h1>
+            <p class="mb-0">User Account & Profile Management</p>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+
+        <!-- TempData Notification Alerts -->
+        @if (TempData["succeeded"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i> @TempData["succeeded"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["failed"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["failed"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="row g-4">
+
+            <!-- Profile Information Card -->
+            <div class="col-lg-7">
+                <div class="card h-100">
+                    <div class="card-header py-3">
+                        <i class="bi bi-person-lines-fill me-2 text-primary"></i> Personal Details
+                    </div>
+                    <div class="card-body p-4">
+                        <form asp-area="@Pharmacy.Utils.CD.c" asp-controller="Profile" asp-action="UpdateProfile" method="post">
+                            @Html.AntiForgeryToken()
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label font-weight-bold">First Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input asp-for="FirstName" class="form-control" placeholder="First Name" required />
+                                    </div>
+                                    <span asp-validation-for="FirstName" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Last Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input asp-for="LastName" class="form-control" placeholder="Last Name" required />
+                                    </div>
+                                    <span asp-validation-for="LastName" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                        <input asp-for="Email" type="email" class="form-control" placeholder="email@example.com" required />
+                                    </div>
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone Number</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                        <input asp-for="PhoneNumber" class="form-control" placeholder="Phone Number" />
+                                    </div>
+                                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                        <input asp-for="Adresse" class="form-control" placeholder="Full Address" />
+                                    </div>
+                                    <span asp-validation-for="Adresse" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-12 mt-4 text-end">
+                                    <button type="submit" class="btn btn-pharmacy px-4 py-2">
+                                        <i class="bi bi-save me-1"></i> Update Profile
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password Update Card -->
+            <div class="col-lg-5">
+                <div class="card h-100">
+                    <div class="card-header py-3">
+                        <i class="bi bi-shield-lock-fill me-2 text-danger"></i> Password Security
+                    </div>
+                    <div class="card-body p-4">
+                        <form asp-area="@Pharmacy.Utils.CD.c" asp-controller="Profile" asp-action="UpdatePAssword" method="post">
+                            @Html.AntiForgeryToken()
+
+                            <div class="mb-3">
+                                <label class="form-label">Current Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-key"></i></span>
+                                    <input name="CurrentPassword" type="password" class="form-control" placeholder="••••••••" required />
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">New Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input name="NewPassword" type="password" class="form-control" placeholder="••••••••" required />
+                                </div>
+                            </div>
+
+                            <div class="mt-4 text-end">
+                                <button type="submit" class="btn btn-warning text-dark font-weight-bold px-4 py-2" style="border-radius: 8px;">
+                                    <i class="bi bi-shield-check me-1"></i> Change Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

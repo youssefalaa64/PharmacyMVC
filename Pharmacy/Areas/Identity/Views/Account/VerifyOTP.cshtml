@@ -1,0 +1,48 @@
+﻿@model Pharmacy.ViewModels.VerifyOTPVM
+
+@{
+    ViewData["Title"] = "Verify OTP";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Verify OTP Code</h4>
+            </div>
+            <div class="card-body">
+
+                @if (TempData["Success_Notification"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["Success_Notification"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <p class="text-muted">A 4-digit code has been sent to your registered email address.</p>
+
+                <form asp-action="VerifyOTP" method="post">
+                    <!-- Hidden field to preserve UserId across HTTP Post -->
+                    <input type="hidden" asp-for="UserId" />
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="OTP" class="form-label"></label>
+                        <input asp-for="OTP" class="form-control text-center fs-4 tracking-wider" maxlength="4" placeholder="••••" autocomplete="off" />
+                        <span asp-validation-for="OTP" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-info text-white">Verify Code</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

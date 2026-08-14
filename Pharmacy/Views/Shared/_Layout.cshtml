@@ -1,0 +1,183 @@
+﻿@using Pharmacy.Utils
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Pharmacy Care System</title>
+
+    <!-- Bootstrap 5.3 Standard CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Font (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-light d-flex flex-column min-vh-100" style="font-family: 'Inter', sans-serif;">
+
+    <!-- ================= TOP NAVBAR (Universal for All Users) ================= -->
+    <header class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm px-3 sticky-top">
+        <div class="container-fluid">
+
+            <!-- Brand Logo -->
+            <a asp-controller="Home" asp-action="Index" class="navbar-brand d-flex align-items-center fw-bold text-primary">
+                <i class="fa-solid fa-prescription-bottle-medical fs-4 me-2 text-primary"></i>
+                <span class="text-white">Pharma<span class="text-primary">Care</span></span>
+            </a>
+
+            <!-- Toggle Button for Mobile -->
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+
+                <!-- ================= CUSTOMER NAV LINKS (Public / Customer Portal) ================= -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="Index" class="nav-link text-light">
+                            <i class="fa-solid fa-house me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Shop" asp-action="Index" class="nav-link text-light">
+                            <i class="fa-solid fa-capsules me-1"></i> Browse Medicines
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- ================= USER / STAFF AUTHENTICATION SECTION ================= -->
+                <div class="d-flex align-items-center gap-2">
+
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        <!-- Dynamic User Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-circle-user text-primary fs-5 me-2"></i>
+                                <span>@User.Identity?.Name</span>
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+
+                                <!-- STAFF / ADMIN SPECIFIC OPTIONS -->
+                                @if (User.IsInRole(CD.SUPER_ADMIN_ROLE) || User.IsInRole(CD.ADMIN_ROLE))
+                                {
+                                    <li class="dropdown-header text-uppercase fs-7 fw-bold text-primary">Management Portal</li>
+                                    <li>
+                                        <a asp-controller="Admin" asp-action="Dashboard" class="dropdown-item">
+                                            <i class="fa-solid fa-chart-pie me-2 text-secondary"></i> Admin Dashboard
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Products" asp-action="Index" class="dropdown-item">
+                                            <i class="fa-solid fa-pills me-2 text-secondary"></i> Manage Inventory
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="SalesInvoices" asp-action="Create" class="dropdown-item fw-bold text-success">
+                                            <i class="fa-solid fa-cash-register me-2"></i> Open POS Terminal
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                }
+
+                                <!-- CUSTOMER SPECIFIC OPTIONS -->
+                                <li class="dropdown-header text-uppercase fs-7 fw-bold text-secondary">My Account</li>
+                                <li>
+                                    <a asp-controller="Orders" asp-action="MyOrders" class="dropdown-item">
+                                        <i class="fa-solid fa-box me-2 text-secondary"></i> My Prescription Orders
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="Identity" asp-controller="Profile" asp-action="Index" class="dropdown-item">
+                                        <i class="fa-solid fa-id-card me-2 text-secondary"></i> Profile Settings
+                                    </a>
+                                </li>
+
+                                <li><hr class="dropdown-divider"></li>
+
+                                <!-- LOGOUT -->
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" asp-area="identity" method="get" class="d-inline">
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- GUEST ACTIONS (LOGIN / REGISTER) -->
+                        <a asp-controller="Account" asp-action="Login" asp-area="Identity" class="btn btn-outline-light btn-sm fw-semibold">
+                            <i class="fa-solid fa-right-to-bracket me-1"></i> Sign In
+                        </a>
+                        <a asp-controller="Account" asp-action="Register" asp-area="Identity" class="btn btn-primary btn-sm fw-semibold">
+                            <i class="fa-solid fa-user-plus me-1"></i> Register
+                        </a>
+                    }
+
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= SECONDARY SUB-NAVBAR (Only Shown for Staff/Admin) ================= -->
+    @if ((User.Identity?.IsAuthenticated ?? false) && (User.IsInRole("Admin") || User.IsInRole("Pharmacist")))
+    {
+        <nav class="bg-primary text-white py-2 shadow-sm">
+            <div class="container-fluid px-4 d-flex align-items-center justify-content-between overflow-x-auto">
+                <span class="badge bg-light text-primary fw-bold me-3">Staff Control Panel</span>
+
+                <div class="d-flex gap-3 text-nowrap">
+                    <a asp-controller="Categories" asp-action="Index" class="text-white text-decoration-none small fw-semibold">
+                        <i class="fa-solid fa-layer-group me-1"></i> Categories
+                    </a>
+                    <a asp-controller="Products" asp-action="Index" class="text-white text-decoration-none small fw-semibold">
+                        <i class="fa-solid fa-pills me-1"></i> Products
+                    </a>
+                    <a asp-controller="ProductBatches" asp-action="Index" class="text-white text-decoration-none small fw-semibold">
+                        <i class="fa-solid fa-boxes-stacked me-1"></i> Batches & Expiry
+                    </a>
+                    <a asp-controller="Customers" asp-action="Index" class="text-white text-decoration-none small fw-semibold">
+                        <i class="fa-solid fa-users me-1"></i> Customers
+                    </a>
+                    <a asp-controller="SalesInvoices" asp-action="Index" class="text-white text-decoration-none small fw-semibold">
+                        <i class="fa-solid fa-file-invoice-dollar me-1"></i> Invoices
+                    </a>
+                </div>
+
+                <a asp-controller="SalesInvoices" asp-action="Create" class="btn btn-sm btn-success fw-bold ms-3">
+                    <i class="fa-solid fa-cart-shopping me-1"></i> POS
+                </a>
+            </div>
+        </nav>
+    }
+
+    <!-- ================= MAIN BODY CONTENT ================= -->
+    <main class="flex-grow-1 p-4 container-fluid">
+        @RenderBody()
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-white border-top mt-auto py-3 text-secondary small">
+        <div class="container-fluid px-4 d-flex flex-column flex-sm-row justify-content-between align-items-center">
+            <span>&copy; @DateTime.Now.Year - <strong>PharmaCare Management & Store</strong>. All rights reserved.</span>
+            <div class="d-flex gap-3 mt-2 mt-sm-0">
+                <a href="#" class="text-secondary text-decoration-none">Privacy Policy</a>
+                <a href="#" class="text-secondary text-decoration-none">Terms of Service</a>
+                <a href="#" class="text-secondary text-decoration-none">Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
