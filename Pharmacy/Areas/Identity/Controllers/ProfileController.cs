@@ -9,7 +9,7 @@ using Pharmacy.ViewModels;
 namespace Pharmacy.Areas.Identity.Controllers
 {
     [Authorize]
-    [Area(CD.c)]
+    [Area(CD.IDENTITY_AREA)]
     public class ProfileController : Controller
     {
         private readonly UserManager<ApplicationUser> _usermanager;
