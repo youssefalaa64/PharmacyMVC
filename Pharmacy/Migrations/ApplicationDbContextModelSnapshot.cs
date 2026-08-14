@@ -257,7 +257,7 @@ namespace Pharmacy.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("ApplicationUserOtps");
+                    b.ToTable("ApplicationUserOtps", (string)null);
                 });
 
             modelBuilder.Entity("Pharmacy.Models.Category", b =>
@@ -275,7 +275,7 @@ namespace Pharmacy.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Pharmacy.Models.Customer", b =>
@@ -300,7 +300,7 @@ namespace Pharmacy.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("Pharmacy.Models.Order", b =>
@@ -353,7 +353,7 @@ namespace Pharmacy.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Pharmacy.Models.OrderItem", b =>
@@ -385,7 +385,7 @@ namespace Pharmacy.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("Pharmacy.Models.Product", b =>
@@ -424,7 +424,7 @@ namespace Pharmacy.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Pharmacy.Models.ProductBatch", b =>
@@ -456,7 +456,7 @@ namespace Pharmacy.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductBatches");
+                    b.ToTable("ProductBatches", (string)null);
                 });
 
             modelBuilder.Entity("Pharmacy.Models.SalesInvoice", b =>
@@ -496,7 +496,7 @@ namespace Pharmacy.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("SalesInvoices");
+                    b.ToTable("SalesInvoices", (string)null);
                 });
 
             modelBuilder.Entity("Pharmacy.Models.SalesInvoiceItem", b =>
@@ -528,7 +528,7 @@ namespace Pharmacy.Migrations
 
                     b.HasIndex("SalesInvoiceId");
 
-                    b.ToTable("SalesInvoiceItems");
+                    b.ToTable("SalesInvoiceItems", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -39,8 +39,13 @@ namespace Pharmacy
 
             builder.Services.AddTransient<IEmailSender, EmailSender>();
             builder.Services.AddTransient<IDbInitializer, DbInitializer>();
-
-            builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
+            builder.Services.AddScoped<IRepository<Customer>, Repository<Customer>>();
+            builder.Services.AddScoped<IRepository<Category>, Repository<Category>>();
+            builder.Services.AddScoped<IRepository<Product>, Repository<Product>>();
+            builder.Services.AddScoped<IRepository<ProductBatch>, Repository<ProductBatch>>();
+            builder.Services.AddScoped<IRepository<SalesInvoice>, Repository<SalesInvoice>>();
+            builder.Services.AddScoped<IRepository<Order>, Repository<Order>>();
+            //builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
 
 
             var app = builder.Build();

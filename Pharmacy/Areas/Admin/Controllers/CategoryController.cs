@@ -6,9 +6,9 @@ namespace Pharmacy.Areas.Admin.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly Repository<Category> _categoryRepository;
+        private readonly IRepository<Category> _categoryRepository;
 
-        public CategoryController(Repository<Category> categoryRepository)
+        public CategoryController(IRepository<Category> categoryRepository)
         {
             _categoryRepository = categoryRepository;
         }
