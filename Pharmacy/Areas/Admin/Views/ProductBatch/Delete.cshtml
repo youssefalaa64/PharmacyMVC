@@ -1,0 +1,109 @@
+﻿@model Pharmacy.ViewModels.ProductBatchVM
+
+@{
+    ViewData["Title"] = "Delete Batch";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body p-4">
+
+            <div class="text-center mb-4">
+
+                <i class="bi bi-exclamation-triangle text-danger fs-1"></i>
+
+                <h3 class="fw-bold mt-3">
+                    Delete Product Batch?
+                </h3>
+
+                <p class="text-muted">
+                    This action cannot be undone.
+                </p>
+
+            </div>
+
+            <div class="bg-light rounded p-4 mb-4">
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            Batch Number
+                        </small>
+
+                        <div class="fw-semibold">
+                            @Model.BatchNumber
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            Product
+                        </small>
+
+                        <div class="fw-semibold">
+                            @Model.ProductName
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <small class="text-muted">
+                            Expiry Date
+                        </small>
+
+                        <div class="fw-semibold">
+                            @Model.ExpiryDate.ToString("dd MMM yyyy")
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <small class="text-muted">
+                            Cost Price
+                        </small>
+
+                        <div class="fw-semibold">
+                            @Model.CostPrice.ToString("C")
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <small class="text-muted">
+                            Quantity
+                        </small>
+
+                        <div class="fw-semibold">
+                            @Model.QuantityOnHand
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <form asp-action="DeleteConfirmed" method="post">
+
+                <input asp-for="Id" type="hidden" />
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a asp-action="Index"
+                       class="btn btn-light border">
+                        Cancel
+                    </a>
+
+                    <button class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>
+                        Delete Batch
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

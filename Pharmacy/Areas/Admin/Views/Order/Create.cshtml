@@ -1,0 +1,404 @@
+﻿@model Pharmacy.ViewModels.OrderVM
+
+@{
+    ViewData["Title"] = "Create Order";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+        <h2 class="fw-bold">Create Order</h2>
+        <p class="text-muted">
+            Create an order for an online customer
+        </p>
+    </div>
+
+    <form asp-action="Create" method="post">
+
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger"></div>
+
+        <div class="card border-0 shadow-sm mb-4">
+
+            <div class="card-body p-4">
+
+                <h5 class="fw-bold mb-4">
+                    Order Information
+                </h5>
+
+                <div class="row g-4">
+
+                    <div class="col-md-4">
+
+                        <label asp-for="OrderNumber"
+                               class="form-label fw-semibold">
+                            Order Number
+                        </label>
+
+                        <input asp-for="OrderNumber"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="OrderDate"
+                               class="form-label fw-semibold">
+                            Order Date
+                        </label>
+
+                        <input asp-for="OrderDate"
+                               class="form-control"
+                               type="datetime-local" />
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="ApplicationUserId"
+                               class="form-label fw-semibold">
+                            Customer Account
+                        </label>
+
+                        <select asp-for="ApplicationUserId"
+                                asp-items="Model.Users"
+                                class="form-select">
+
+                            <option value="">
+                                -- Select User --
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="Status"
+                               class="form-label fw-semibold">
+                            Status
+                        </label>
+
+                        <select asp-for="Status"
+                                class="form-select"
+                                asp-items="Html.GetEnumSelectList<Pharmacy.Enums.OrderStatus>()">
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="PaymentMethod"
+                               class="form-label fw-semibold">
+                            Payment Method
+                        </label>
+
+                        <select asp-for="PaymentMethod"
+                                class="form-select"
+                                asp-items="Html.GetEnumSelectList<Pharmacy.Enums.PaymentMethod>()">
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="DeliveryFees"
+                               class="form-label fw-semibold">
+                            Delivery Fees
+                        </label>
+
+                        <input asp-for="DeliveryFees"
+                               class="form-control"
+                               type="number"
+                               step="0.01" />
+
+                    </div>
+
+                    <div class="col-md-8">
+
+                        <label asp-for="DeliveryAddress"
+                               class="form-label fw-semibold">
+                            Delivery Address
+                        </label>
+
+                        <textarea asp-for="DeliveryAddress"
+                                  class="form-control"
+                                  rows="2"></textarea>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="Discount"
+                               class="form-label fw-semibold">
+                            Discount
+                        </label>
+
+                        <input asp-for="Discount"
+                               class="form-control"
+                               type="number"
+                               step="0.01" />
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Notes"
+                               class="form-label fw-semibold">
+                            Notes
+                        </label>
+
+                        <textarea asp-for="Notes"
+                                  class="form-control"
+                                  rows="2"></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ITEMS -->
+
+        <div class="card border-0 shadow-sm mb-4">
+
+            <div class="card-body p-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <h5 class="fw-bold mb-0">
+                        Order Items
+                    </h5>
+
+                    <button type="button"
+                            class="btn btn-sm btn-outline-primary"
+                            onclick="addItem()">
+
+                        <i class="bi bi-plus-lg me-1"></i>
+                        Add Product
+
+                    </button>
+
+                </div>
+
+                <div id="itemsContainer">
+
+                    @if (Model.OrderItems.Any())
+                    {
+                        for (int i = 0; i < Model.OrderItems.Count; i++)
+                        {
+                            <div class="row g-3 align-items-end item-row mb-3">
+
+                                <div class="col-md-4">
+
+                                    <label class="form-label">
+                                        Product
+                                    </label>
+
+                                    <select name="OrderItems[@i].ProductId"
+                                            class="form-select">
+
+                                        <option value="">
+                                            -- Select Product --
+                                        </option>
+
+                                        @foreach (var product in Model.Products)
+                                        {
+                                            <option value="@product.Value"
+                                                    selected="@(product.Value == Model.OrderItems[i].ProductId.ToString())">
+                                                @product.Text
+                                            </option>
+                                        }
+
+                                    </select>
+
+                                </div>
+
+                                <div class="col-md-2">
+
+                                    <label class="form-label">
+                                        Quantity
+                                    </label>
+
+                                    <input name="OrderItems[@i].Quantity"
+                                           value="@Model.OrderItems[i].Quantity"
+                                           type="number"
+                                           min="1"
+                                           class="form-control" />
+
+                                </div>
+
+                                <div class="col-md-3">
+
+                                    <label class="form-label">
+                                        Unit Price
+                                    </label>
+
+                                    <input name="OrderItems[@i].UnitPrice"
+                                           value="@Model.OrderItems[i].UnitPrice"
+                                           type="number"
+                                           step="0.01"
+                                           class="form-control" />
+
+                                </div>
+
+                                <div class="col-md-2">
+
+                                    <label class="form-label">
+                                        Total
+                                    </label>
+
+                                    <input value="@Model.OrderItems[i].TotalPrice"
+                                           class="form-control"
+                                           readonly />
+
+                                </div>
+
+                                <div class="col-md-1">
+
+                                    <button type="button"
+                                            class="btn btn-outline-danger"
+                                            onclick="removeItem(this)">
+
+                                        <i class="bi bi-trash"></i>
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        }
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+
+            <a asp-action="Index"
+               class="btn btn-light border">
+                Cancel
+            </a>
+
+            <button class="btn btn-primary">
+                <i class="bi bi-check-lg me-1"></i>
+                Create Order
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        let itemIndex = @Model.OrderItems.Count;
+
+        function addItem() {
+
+            const container =
+                document.getElementById("itemsContainer");
+
+            const html = `
+                        <div class="row g-3 align-items-end item-row mb-3">
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+                                    Product
+                                </label>
+
+                                <select name="OrderItems[${itemIndex}].ProductId"
+                                        class="form-select">
+
+                                    <option value="">
+                                        -- Select Product --
+                                    </option>
+
+                                    @foreach (var product in Model.Products)
+                                    {
+                                            <option value="@product.Value">
+                                                    @product.Text
+                                            </option>
+                                    }
+
+                                </select>
+
+                            </div>
+
+                            <div class="col-md-2">
+
+                                <label class="form-label">
+                                    Quantity
+                                </label>
+
+                                <input name="OrderItems[${itemIndex}].Quantity"
+                                       type="number"
+                                       min="1"
+                                       value="1"
+                                       class="form-control">
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <label class="form-label">
+                                    Unit Price
+                                </label>
+
+                                <input name="OrderItems[${itemIndex}].UnitPrice"
+                                       type="number"
+                                       step="0.01"
+                                       class="form-control">
+
+                            </div>
+
+                            <div class="col-md-2">
+
+                                <label class="form-label">
+                                    Total
+                                </label>
+
+                                <input class="form-control"
+                                       readonly>
+
+                            </div>
+
+                            <div class="col-md-1">
+
+                                <button type="button"
+                                        class="btn btn-outline-danger"
+                                        onclick="removeItem(this)">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+                    `;
+
+            container.insertAdjacentHTML("beforeend", html);
+
+            itemIndex++;
+        }
+
+        function removeItem(button) {
+
+            button.closest(".item-row").remove();
+
+        }
+
+    </script>
+}

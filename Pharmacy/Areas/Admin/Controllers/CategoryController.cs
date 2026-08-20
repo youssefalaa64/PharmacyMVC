@@ -1,14 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Pharmacy.Models;
 using Pharmacy.Repositories;
+using Pharmacy.Utils;
 
 namespace Pharmacy.Areas.Admin.Controllers
 {
+    [Authorize]
+    [Area(CD.ADMIN_AREA)]
     public class CategoryController : Controller
     {
-        private readonly Repository<Category> _categoryRepository;
+        private readonly IRepository<Category> _categoryRepository;
 
-        public CategoryController(Repository<Category> categoryRepository)
+        public CategoryController(IRepository<Category> categoryRepository)
         {
             _categoryRepository = categoryRepository;
         }

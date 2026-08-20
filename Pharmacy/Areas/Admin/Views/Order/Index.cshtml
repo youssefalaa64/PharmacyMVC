@@ -1,0 +1,123 @@
+﻿@model IEnumerable<Pharmacy.ViewModels.OrderVM>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">Orders</h2>
+            <p class="text-muted mb-0">
+                Manage online customer orders
+            </p>
+        </div>
+
+        <a asp-action="Create"
+           class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>
+            Create Order
+        </a>
+
+    </div>
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th>Order #</th>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Status</th>
+                            <th>Net Amount</th>
+                            <th>Payment</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var order in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    <span class="fw-semibold">
+                                        @order.OrderNumber
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @order.OrderDate.ToString("dd MMM yyyy HH:mm")
+                                </td>
+
+                                <td>
+                                    @order.ApplicationUserId
+                                </td>
+
+                                <td>
+                                    <span class="badge bg-primary">
+                                        @order.Status
+                                    </span>
+                                </td>
+
+                                <td class="fw-semibold">
+                                    @order.NetAmount.ToString("C")
+                                </td>
+
+                                <td>
+                                    @order.PaymentMethod
+                                </td>
+
+                                <td class="text-end">
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@order.Id"
+                                       class="btn btn-sm btn-outline-info">
+
+                                        <i class="bi bi-eye"></i>
+
+                                    </a>
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@order.Id"
+                                       class="btn btn-sm btn-outline-primary">
+
+                                        <i class="bi bi-pencil"></i>
+
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@order.Id"
+                                       class="btn btn-sm btn-outline-danger">
+
+                                        <i class="bi bi-trash"></i>
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

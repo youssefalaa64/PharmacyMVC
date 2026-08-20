@@ -1,0 +1,142 @@
+﻿@model Pharmacy.ViewModels.ProductBatchVM
+
+@{
+    ViewData["Title"] = "Add Product Batch";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+        <h2 class="fw-bold">Add Product Batch</h2>
+        <p class="text-muted">
+            Add a new batch for a product
+        </p>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body p-4">
+
+            <form asp-action="Create" method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="alert alert-danger"></div>
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="ProductId"
+                               class="form-label fw-semibold">
+                            Product
+                        </label>
+
+                        <select asp-for="ProductId"
+                                asp-items="Model.Products"
+                                class="form-select">
+
+                            <option value="">
+                                -- Select Product --
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="ProductId"
+                              class="text-danger"></span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="BatchNumber"
+                               class="form-label fw-semibold">
+                            Batch Number
+                        </label>
+
+                        <input asp-for="BatchNumber"
+                               class="form-control"
+                               placeholder="e.g. BTH-2026-001" />
+
+                        <span asp-validation-for="BatchNumber"
+                              class="text-danger"></span>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="ExpiryDate"
+                               class="form-label fw-semibold">
+                            Expiry Date
+                        </label>
+
+                        <input asp-for="ExpiryDate"
+                               class="form-control"
+                               type="date" />
+
+                        <span asp-validation-for="ExpiryDate"
+                              class="text-danger"></span>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="CostPrice"
+                               class="form-label fw-semibold">
+                            Cost Price
+                        </label>
+
+                        <input asp-for="CostPrice"
+                               class="form-control"
+                               type="number"
+                               step="0.01" />
+
+                        <span asp-validation-for="CostPrice"
+                              class="text-danger"></span>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="QuantityOnHand"
+                               class="form-label fw-semibold">
+                            Quantity
+                        </label>
+
+                        <input asp-for="QuantityOnHand"
+                               class="form-control"
+                               type="number" />
+
+                        <span asp-validation-for="QuantityOnHand"
+                              class="text-danger"></span>
+
+                    </div>
+
+                </div>
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a asp-action="Index"
+                       class="btn btn-light border">
+                        Cancel
+                    </a>
+
+                    <button class="btn btn-primary">
+                        <i class="bi bi-check-lg me-1"></i>
+                        Save Batch
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

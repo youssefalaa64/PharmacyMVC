@@ -1,0 +1,490 @@
+﻿@model Pharmacy.ViewModels.AdminDashboardVM
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="page-header">
+    <div>
+        <h2>Dashboard</h2>
+        <p>Overview of your pharmacy management system.</p>
+    </div>
+</div>
+
+
+<!-- ================= STATISTICS ================= -->
+
+<div class="row g-4 mb-4">
+
+    <!-- Users -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="admin-card h-100">
+
+            <div class="admin-card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <p class="text-muted mb-1">
+                            Total Users
+                        </p>
+
+                        <h3 class="fw-bold mb-0">
+                            @Model.TotalUsers
+                        </h3>
+
+                    </div>
+
+                    <div class="bg-primary bg-opacity-10
+                        text-primary rounded-circle
+                        p-3">
+
+                        <i class="bi bi-people fs-4"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Products -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="admin-card h-100">
+
+            <div class="admin-card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <p class="text-muted mb-1">
+                            Total Products
+                        </p>
+
+                        <h3 class="fw-bold mb-0">
+                            @Model.TotalProducts
+                        </h3>
+
+                    </div>
+
+                    <div class="bg-success bg-opacity-10
+                        text-success rounded-circle
+                        p-3">
+
+                        <i class="bi bi-capsule fs-4"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Customers -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="admin-card h-100">
+
+            <div class="admin-card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <p class="text-muted mb-1">
+                            Offline Customers
+                        </p>
+
+                        <h3 class="fw-bold mb-0">
+                            @Model.TotalCustomers
+                        </h3>
+
+                    </div>
+
+                    <div class="bg-warning bg-opacity-10
+                        text-warning rounded-circle
+                        p-3">
+
+                        <i class="bi bi-person-vcard fs-4"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Orders -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="admin-card h-100">
+
+            <div class="admin-card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <p class="text-muted mb-1">
+                            Total Orders
+                        </p>
+
+                        <h3 class="fw-bold mb-0">
+                            @Model.TotalOrders
+                        </h3>
+
+                    </div>
+
+                    <div class="bg-info bg-opacity-10
+                        text-info rounded-circle
+                        p-3">
+
+                        <i class="bi bi-cart3 fs-4"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- SECOND ROW -->
+
+<div class="row g-4 mb-4">
+
+    <!-- Product Batches -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="admin-card h-100">
+
+            <div class="admin-card-body">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <p class="text-muted mb-1">
+                            Product Batches
+                        </p>
+
+                        <h3 class="fw-bold">
+                            @Model.TotalProductBatches
+                        </h3>
+
+                    </div>
+
+                    <i class="bi bi-boxes fs-2 text-primary"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Sales Invoices -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="admin-card h-100">
+
+            <div class="admin-card-body">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <p class="text-muted mb-1">
+                            Sales Invoices
+                        </p>
+
+                        <h3 class="fw-bold">
+                            @Model.TotalSalesInvoices
+                        </h3>
+
+                    </div>
+
+                    <i class="bi bi-receipt fs-2 text-success"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Total Sales -->
+
+    <div class="col-xl-6">
+
+        <div class="admin-card h-100">
+
+            <div class="admin-card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <p class="text-muted mb-1">
+                            Total Sales
+                        </p>
+
+                        <h3 class="fw-bold text-success mb-0">
+
+                            @Model.TotalSales.ToString("N2")
+
+                        </h3>
+
+                    </div>
+
+                    <div class="bg-success bg-opacity-10
+                        text-success rounded-circle
+                        p-3">
+
+                        <i class="bi bi-currency-dollar fs-4"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= CHARTS ================= -->
+
+<div class="row g-4">
+
+    <!-- Orders Status Chart -->
+
+    <div class="col-lg-6">
+
+        <div class="admin-card">
+
+            <div class="admin-card-header">
+
+                <div>
+
+                    <h5 class="mb-1">
+                        Orders Status
+                    </h5>
+
+                    <small class="text-muted">
+                        Distribution of orders by status
+                    </small>
+
+                </div>
+
+            </div>
+
+            <div class="admin-card-body">
+
+                <canvas id="ordersStatusChart"
+                        style="max-height:350px;">
+                </canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Entity Records Chart -->
+
+    <div class="col-lg-6">
+
+        <div class="admin-card">
+
+            <div class="admin-card-header">
+
+                <div>
+
+                    <h5 class="mb-1">
+                        System Records
+                    </h5>
+
+                    <small class="text-muted">
+                        Records across main entities
+                    </small>
+
+                </div>
+
+            </div>
+
+            <div class="admin-card-body">
+
+                <canvas id="recordsChart"
+                        style="max-height:350px;">
+                </canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+        // ================================
+        // Orders Status Pie Chart
+        // ================================
+
+        const ordersStatusChart =
+            document.getElementById('ordersStatusChart');
+
+        new Chart(ordersStatusChart, {
+
+            type: 'pie',
+
+            data: {
+
+                labels: [
+                    'Pending',
+                    'Processing',
+                    'Completed',
+                    'Cancelled'
+                ],
+
+                datasets: [{
+
+                    data: [
+                                @Model.PendingOrders,
+                                @Model.ProcessingOrders,
+                                @Model.CompletedOrders,
+                        @Model.CancelledOrders
+                    ]
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                plugins: {
+
+                    legend: {
+                        position: 'bottom'
+                    }
+
+                }
+
+            }
+
+        });
+
+
+        // ================================
+        // System Records Bar Chart
+        // ================================
+
+        const recordsChart =
+            document.getElementById('recordsChart');
+
+        new Chart(recordsChart, {
+
+            type: 'bar',
+
+            data: {
+
+                labels: [
+                    'Users',
+                    'Products',
+                    'Batches',
+                    'Customers',
+                    'Orders',
+                    'Invoices'
+                ],
+
+                datasets: [{
+
+                    label: 'Total Records',
+
+                    data: [
+                                @Model.TotalUsers,
+                                @Model.TotalProducts,
+                                @Model.TotalProductBatches,
+                                @Model.TotalCustomers,
+                                @Model.TotalOrders,
+                        @Model.TotalSalesInvoices
+                    ],
+
+                    borderWidth: 1
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true
+
+                    }
+
+                },
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    }
+
+                }
+
+            }
+
+        });
+
+    </script>
+}

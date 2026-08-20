@@ -9,7 +9,7 @@ using Pharmacy.ViewModels;
 
 namespace Pharmacy.Areas.Identity.Controllers
 {
-    [Area(CD.c)]
+    [Area(CD.IDENTITY_AREA)]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -57,7 +57,7 @@ namespace Pharmacy.Areas.Identity.Controllers
             // Send Email 
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var link = Url.Action(nameof(ConfirmEmail), "Account", new { area = CD.c, userId = user.Id, token = token }, Request.Scheme);
+            var link = Url.Action(nameof(ConfirmEmail), "Account", new { area = CD.IDENTITY_AREA, userId = user.Id, token = token }, Request.Scheme);
             
             await _emailSender.SendEmailAsync(
                 registerVM.Email,
@@ -130,10 +130,10 @@ namespace Pharmacy.Areas.Identity.Controllers
                     errors += error.Description + "\n";
                 }
                 TempData["Error_Notification"] = errors;
-                return RedirectToAction(nameof(Login), "Account", new { area = CD.c });
+                return RedirectToAction(nameof(Login), "Account", new { area = CD.IDENTITY_AREA });
             }
             TempData["Success_Notification"] = "Email Confirmed Successfully";
-            return RedirectToAction(nameof(Login), "Account", new { area = CD.c });
+            return RedirectToAction(nameof(Login), "Account", new { area = CD.IDENTITY_AREA });
         }
 
         [HttpGet]
@@ -154,7 +154,7 @@ namespace Pharmacy.Areas.Identity.Controllers
             }
             // Send Email 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var link = Url.Action(nameof(ConfirmEmail), "Account", new { area = CD.c, userId = user.Id, token = token }, Request.Scheme);
+            var link = Url.Action(nameof(ConfirmEmail), "Account", new { area = CD.IDENTITY_AREA, userId = user.Id, token = token }, Request.Scheme);
             await _emailSender.SendEmailAsync(
                 user.Email,
                 "Ecommerce confirm Email",

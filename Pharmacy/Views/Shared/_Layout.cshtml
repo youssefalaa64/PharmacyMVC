@@ -63,23 +63,97 @@
                                 <!-- STAFF / ADMIN SPECIFIC OPTIONS -->
                                 @if (User.IsInRole(CD.SUPER_ADMIN_ROLE) || User.IsInRole(CD.ADMIN_ROLE))
                                 {
-                                    <li class="dropdown-header text-uppercase fs-7 fw-bold text-primary">Management Portal</li>
+                                    <li class="dropdown-header text-uppercase fs-7 fw-bold text-primary">
+                                        Management Portal
+                                    </li>
+
                                     <li>
-                                        <a asp-controller="Admin" asp-action="Dashboard" class="dropdown-item">
-                                            <i class="fa-solid fa-chart-pie me-2 text-secondary"></i> Admin Dashboard
+                                        <a asp-area="Admin"
+                                           asp-controller="Home"
+                                           asp-action="Index"
+                                           class="dropdown-item">
+
+                                            <i class="fa-solid fa-chart-pie me-2 text-secondary"></i>
+                                            Admin Dashboard
+
                                         </a>
                                     </li>
+
                                     <li>
-                                        <a asp-controller="Products" asp-action="Index" class="dropdown-item">
-                                            <i class="fa-solid fa-pills me-2 text-secondary"></i> Manage Inventory
+                                        <a asp-area="Admin"
+                                           asp-controller="Product"
+                                           asp-action="Index"
+                                           class="dropdown-item">
+
+                                            <i class="fa-solid fa-pills me-2 text-secondary"></i>
+                                            Manage Products
+
                                         </a>
                                     </li>
+
                                     <li>
-                                        <a asp-controller="SalesInvoices" asp-action="Create" class="dropdown-item fw-bold text-success">
-                                            <i class="fa-solid fa-cash-register me-2"></i> Open POS Terminal
+                                        <a asp-area="Admin"
+                                           asp-controller="ProductBatch"
+                                           asp-action="Index"
+                                           class="dropdown-item">
+
+                                            <i class="fa-solid fa-boxes-stacked me-2 text-secondary"></i>
+                                            Manage Product Batches
+
                                         </a>
                                     </li>
-                                    <li><hr class="dropdown-divider"></li>
+
+                                    <li>
+                                        <a asp-area="Admin"
+                                           asp-controller="Customer"
+                                           asp-action="Index"
+                                           class="dropdown-item">
+
+                                            <i class="fa-solid fa-users me-2 text-secondary"></i>
+                                            Manage Customers
+
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a asp-area="Admin"
+                                           asp-controller="SalesInvoice"
+                                           asp-action="Index"
+                                           class="dropdown-item">
+
+                                            <i class="fa-solid fa-file-invoice-dollar me-2 text-secondary"></i>
+                                            Sales Invoices
+
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a asp-area="Admin"
+                                           asp-controller="Order"
+                                           asp-action="Index"
+                                           class="dropdown-item">
+
+                                            <i class="fa-solid fa-cart-shopping me-2 text-secondary"></i>
+                                            Manage Orders
+
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a asp-area="Admin"
+                                           asp-controller="User"
+                                           asp-action="Index"
+                                           class="dropdown-item">
+
+                                            <i class="fa-solid fa-user-gear me-2 text-secondary"></i>
+                                            Manage Users
+
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
                                 }
 
                                 <!-- CUSTOMER SPECIFIC OPTIONS -->

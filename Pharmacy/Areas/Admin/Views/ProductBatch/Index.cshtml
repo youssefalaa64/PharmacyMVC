@@ -1,0 +1,121 @@
+﻿@model IEnumerable<Pharmacy.ViewModels.ProductBatchVM>
+
+@{
+    ViewData["Title"] = "Product Batches";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">Product Batches</h2>
+            <p class="text-muted mb-0">
+                Manage product batches, expiry dates and stock
+            </p>
+        </div>
+
+        <a asp-action="Create"
+           class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>
+            Add Batch
+        </a>
+
+    </div>
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th>#</th>
+                            <th>Batch Number</th>
+                            <th>Product</th>
+                            <th>Expiry Date</th>
+                            <th>Cost Price</th>
+                            <th>Quantity</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="7"
+                                    class="text-center text-muted py-5">
+                                    No batches found.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var batch in Model)
+                            {
+                                <tr>
+
+                                    <td>@batch.Id</td>
+
+                                    <td>
+                                        <span class="badge bg-light text-dark border">
+                                            @batch.BatchNumber
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @batch.ProductId
+                                    </td>
+
+                                    <td>
+                                        @batch.ExpiryDate.ToString("dd MMM yyyy")
+                                    </td>
+
+                                    <td>
+                                        @batch.CostPrice.ToString("C")
+                                    </td>
+
+                                    <td>
+                                        <span class="badge bg-primary">
+                                            @batch.QuantityOnHand
+                                        </span>
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <a asp-action="Edit"
+                                           asp-route-id="@batch.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@batch.Id"
+                                           class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,10 +1,10 @@
-﻿using Pharmacy.Enums;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Pharmacy.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Pharmacy.Models
+namespace Pharmacy.ViewModels
 {
-    public class Order
+    public class OrderVM
     {
         public int Id { get; set; }
         [Required]
@@ -12,21 +12,24 @@ namespace Pharmacy.Models
         public string OrderNumber { get; set; } = string.Empty;
         public DateTime OrderDate { get; set; } = DateTime.Now;
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
-        [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Discount { get; set; } = 0;
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal DeliveryFees { get; set; } = 0;
-        [Column(TypeName = "decimal(18,2)")]
+        [Range(0, double.MaxValue)]
+        public decimal Discount { get; set; }
+        [Range(0, double.MaxValue)]
+        public decimal DeliveryFees { get; set; }
         public decimal NetAmount { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
+        [Required]
         [StringLength(300)]
         public string DeliveryAddress { get; set; } = string.Empty;
         public string? Notes { get; set; }
+        [Required]
         public string ApplicationUserId { get; set; } = string.Empty;
-        public ApplicationUser? ApplicationUser { get; set; }
-        public ICollection<OrderItem> OrderItems { get; set; }
-            = new List<OrderItem>();
+        public IEnumerable<SelectListItem> Users { get; set; }
+            = new List<SelectListItem>();
+        public IEnumerable<SelectListItem> Products { get; set; }
+           = new List<SelectListItem>();
+        public List<OrderItemVM> OrderItems { get; set; }
+            = new List<OrderItemVM>();
     }
 }

@@ -83,7 +83,7 @@
                         <i class="bi bi-person-lines-fill me-2 text-primary"></i> Personal Details
                     </div>
                     <div class="card-body p-4">
-                        <form asp-area="@Pharmacy.Utils.CD.c" asp-controller="Profile" asp-action="UpdateProfile" method="post">
+                        <form asp-area="@Pharmacy.Utils.CD.IDENTITY_AREA" asp-controller="Profile" asp-action="UpdateProfile" method="post">
                             @Html.AntiForgeryToken()
 
                             <div class="row g-3">
@@ -150,7 +150,7 @@
                         <i class="bi bi-shield-lock-fill me-2 text-danger"></i> Password Security
                     </div>
                     <div class="card-body p-4">
-                        <form asp-area="@Pharmacy.Utils.CD.c" asp-controller="Profile" asp-action="UpdatePAssword" method="post">
+                        <form asp-area="@Pharmacy.Utils.CD.IDENTITY_AREA" asp-controller="Profile" asp-action="UpdatePassword" method="post">
                             @Html.AntiForgeryToken()
 
                             <div class="mb-3">

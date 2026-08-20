@@ -1,0 +1,140 @@
+﻿@model Pharmacy.Models.Category
+
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+
+    <div class="mb-4">
+
+        <h2 class="fw-bold mb-1 text-danger">
+
+            <i class="bi bi-trash me-2"></i>
+            Delete Category
+
+        </h2>
+
+        <p class="text-muted mb-0">
+            Review the category before permanently deleting it.
+        </p>
+
+    </div>
+
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-5 text-center">
+
+                    <!-- Warning Icon -->
+
+                    <div class="bg-danger-subtle text-danger rounded-circle
+                        d-flex align-items-center justify-content-center
+                        mx-auto mb-4"
+                         style="width:80px;height:80px;">
+
+                        <i class="bi bi-exclamation-triangle-fill fs-2"></i>
+
+                    </div>
+
+
+                    <h4 class="fw-bold mb-2">
+                        Are you sure?
+                    </h4>
+
+                    <p class="text-muted mb-4">
+
+                        You are about to delete the following category.
+                        This action cannot be undone.
+
+                    </p>
+
+
+                    <!-- Category Info -->
+
+                    <div class="bg-light rounded p-4 mb-4">
+
+                        <div class="d-flex align-items-center">
+
+                            <div class="bg-primary-subtle text-primary rounded-circle
+                                d-flex align-items-center justify-content-center me-3"
+                                 style="width:50px;height:50px;">
+
+                                <i class="bi bi-tag"></i>
+
+                            </div>
+
+                            <div class="text-start">
+
+                                <small class="text-muted">
+                                    Category
+                                </small>
+
+                                <h5 class="fw-bold mb-0">
+                                    @Model.Name
+                                </h5>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Warning -->
+
+                    <div class="alert alert-warning text-start">
+
+                        <i class="bi bi-info-circle me-2"></i>
+
+                        Deleting a category may fail if products are
+                        currently associated with it.
+
+                    </div>
+
+
+                    <!-- Form -->
+
+                    <form asp-action="Delete"
+                          method="post">
+
+                        <input asp-for="Id"
+                               type="hidden" />
+
+                        <div class="d-flex justify-content-center gap-2">
+
+                            <a asp-action="Index"
+                               class="btn btn-light border px-4">
+
+                                <i class="bi bi-x-lg me-1"></i>
+                                Cancel
+
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-danger px-4">
+
+                                <i class="bi bi-trash me-1"></i>
+                                Delete Category
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

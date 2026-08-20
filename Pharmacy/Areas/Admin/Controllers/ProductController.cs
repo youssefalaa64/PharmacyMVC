@@ -1,17 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pharmacy.Models;
 using Pharmacy.Repositories;
+using Pharmacy.Utils;
 using Pharmacy.ViewModels;
 
 namespace Pharmacy.Areas.Admin.Controllers
 {
+    [Authorize(Roles = $" {CD.SUPER_ADMIN_ROLE} , {CD.ADMIN_ROLE}  , {CD.PHARMACIST_ROLE}")]
+    [Area(CD.ADMIN_AREA)]
     public class ProductController : Controller
     {
-        private readonly Repository<Product> _repository;
-        private readonly Repository<Category> _categoryRepository;
+        private readonly IRepository<Product> _repository;
+        private readonly IRepository<Category> _categoryRepository;
 
-        public ProductController(Repository<Product> repository, Repository<Category> categoryRepository)
+        public ProductController(IRepository<Product> repository, IRepository<Category> categoryRepository)
         {
             _repository = repository;
             _categoryRepository = categoryRepository;
@@ -75,7 +79,7 @@ namespace Pharmacy.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProductVM productVM, IFormFile ImageFile)
+        public async Task<IActionResult> Create(ProductVM productVM)
         {
             if (!ModelState.IsValid)
             {
@@ -102,18 +106,18 @@ namespace Pharmacy.Areas.Admin.Controllers
                 RequiresPrescription = productVM.RequiresPrescription,
                 CategoryId = productVM.CategoryId
             };
-            if (ImageFile is not null && ImageFile.Length > 0)
-            {
-                var fileName = Guid.NewGuid().ToString() + "-" + ImageFile.FileName;
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\", fileName);
-                using (var stream = System.IO.File.Create(filePath))
-                {
-                    ImageFile.CopyTo(stream);
-                }
-                product.ProductImg = fileName;
+            //if (ImageFile is not null && ImageFile.Length > 0)
+            //{
+            //    var fileName = Guid.NewGuid().ToString() + "-" + ImageFile.FileName;
+            //    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\", fileName);
+            //    using (var stream = System.IO.File.Create(filePath))
+            //    {
+            //        ImageFile.CopyTo(stream);
+            //    }
+            //    product.ProductImg = fileName;
 
 
-            }
+            //}
                 await _repository.CreateAsync(product);
             await _repository.CommitAsync();
 
@@ -153,7 +157,7 @@ namespace Pharmacy.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ProductVM productVM, IFormFile? ImageFile)
+        public async Task<IActionResult> Edit(ProductVM productVM)
         {
             if (!ModelState.IsValid)
             {
@@ -183,21 +187,22 @@ namespace Pharmacy.Areas.Admin.Controllers
             product.CategoryId = productVM.CategoryId;
 
            
-            if (ImageFile is not null && ImageFile.Length > 0)
-            {
-                var fileName = Guid.NewGuid().ToString() + "-" + ImageFile.FileName;
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\", fileName);
+            //if (ImageFile is not null && ImageFile.Length > 0)
+            //{
+            //    var fileName = Guid.NewGuid().ToString() + "-" + ImageFile.FileName;
+            //    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\", fileName);
 
-                using (var stream = System.IO.File.Create(filePath))
-                {
-                    ImageFile.CopyTo(stream);
-                }
+            //    using (var stream = System.IO.File.Create(filePath))
+            //    {
+            //        ImageFile.CopyTo(stream);
+            //    }
 
                
-                product.ProductImg = fileName;
-            }
+            //    product.ProductImg = fileName;
+            //}
             
-             _repository.Update(product); 
+             _repository.Update(product);
+            await _repository.CommitAsync();
 
             return RedirectToAction(nameof(Index));
         }
@@ -232,14 +237,14 @@ namespace Pharmacy.Areas.Admin.Controllers
             }
 
             
-            if (!string.IsNullOrEmpty(product.ProductImg))
-            {
-                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\", product.ProductImg);
-                if (System.IO.File.Exists(imagePath))
-                {
-                    System.IO.File.Delete(imagePath);
-                }
-            }
+            //if (!string.IsNullOrEmpty(product.ProductImg))
+            //{
+            //    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\", product.ProductImg);
+            //    if (System.IO.File.Exists(imagePath))
+            //    {
+            //        System.IO.File.Delete(imagePath);
+            //    }
+            //}
 
             
             _repository.Delete(product);
