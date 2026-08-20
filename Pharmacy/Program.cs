@@ -44,7 +44,9 @@ namespace Pharmacy
             builder.Services.AddScoped<IRepository<Product>, Repository<Product>>();
             builder.Services.AddScoped<IRepository<ProductBatch>, Repository<ProductBatch>>();
             builder.Services.AddScoped<IRepository<SalesInvoice>, Repository<SalesInvoice>>();
+            builder.Services.AddScoped<IRepository<SalesInvoiceItem>, Repository<SalesInvoiceItem>>();
             builder.Services.AddScoped<IRepository<Order>, Repository<Order>>();
+            builder.Services.AddScoped<IRepository<OrderItem>, Repository<OrderItem>>();
             //builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
 
 

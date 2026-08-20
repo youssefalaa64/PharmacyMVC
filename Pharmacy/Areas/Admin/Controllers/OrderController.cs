@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pharmacy.Models;
 using Pharmacy.Repositories;
+using Pharmacy.Utils;
 using Pharmacy.ViewModels;
 
 namespace Pharmacy.Areas.Admin.Controllers
 {
+    [Authorize]
+    [Area(CD.ADMIN_AREA)]
     public class OrderController : Controller
     {
         private readonly IRepository<Order> _orderrepository;

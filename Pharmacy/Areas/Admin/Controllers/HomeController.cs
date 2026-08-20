@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.DataAccess;
 using Pharmacy.Enums;
+using Pharmacy.Utils;
 using Pharmacy.ViewModels;
 
 namespace Pharmacy.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Authorize]
+    [Area(CD.ADMIN_AREA)]
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;

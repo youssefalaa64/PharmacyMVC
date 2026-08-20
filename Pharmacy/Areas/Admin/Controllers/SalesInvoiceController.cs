@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pharmacy.Models;
 using Pharmacy.Repositories;
+using Pharmacy.Utils;
 using Pharmacy.ViewModels;
 
 namespace Pharmacy.Areas.Admin.Controllers
 {
+    [Authorize]
+    [Area(CD.ADMIN_AREA)]
     public class SalesInvoiceController : Controller
     {
         private readonly IRepository<SalesInvoice> _salesInvoicerepository;
@@ -103,11 +107,46 @@ namespace Pharmacy.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var model = new SalesInvoiceVM();
+            var customers = await _customerRepository.GetAllAsync();
 
-            await LoadInvoiceData(model);
+            var orders = await _orderRepository.GetAllAsync();
 
-            return View(model);
+            var batches = await _batchRepository.GetAllAsync(
+                includes: [b => b.Product]
+            );
+
+            var vm = new SalesInvoiceVM
+            {
+                InvoiceDate = DateTime.Now,
+
+                Customers = customers.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }),
+
+                Orders = orders.Select(o => new SelectListItem
+                {
+                    Value = o.Id.ToString(),
+                    Text = o.OrderNumber
+                }),
+
+                InvoiceItems = new List<SalesInvoiceItemVM>
+        {
+            new SalesInvoiceItemVM
+            {
+                Quantity = 1
+            }
+        }
+            };
+
+            ViewBag.Batches = batches.Select(b => new SelectListItem
+            {
+                Value = b.Id.ToString(),
+                Text = $"{b.Product!.Name} - Batch: {b.BatchNumber}"
+            }).ToList();
+
+            return View(vm);
         }
 
         // POST: Admin/SalesInvoice/Create

@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pharmacy.Models;
 using Pharmacy.Repositories;
+using Pharmacy.Utils;
 using Pharmacy.ViewModels;
 
 namespace Pharmacy.Areas.Admin.Controllers
 {
+    [Authorize]
+    [Area(CD.ADMIN_AREA)]
     public class ProductBatchController : Controller
     {
         private readonly IRepository<ProductBatch> _productbatchrepository;
@@ -34,7 +38,8 @@ namespace Pharmacy.Areas.Admin.Controllers
                 BatchNumber = b.BatchNumber,
                 ExpiryDate = b.ExpiryDate,
                 CostPrice = b.CostPrice,
-                QuantityOnHand = b.QuantityOnHand
+                QuantityOnHand = b.QuantityOnHand,
+                ProductName = b.Product?.Name
             });
 
             return View(result);

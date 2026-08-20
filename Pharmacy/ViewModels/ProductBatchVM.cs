@@ -8,6 +8,7 @@ namespace Pharmacy.ViewModels
         public int Id { get; set; }
         [Required]
         public int ProductId { get; set; }
+        public string? ProductName { get; set; }
         [Required]
         [StringLength(50)]
         public string BatchNumber { get; set; } = string.Empty;

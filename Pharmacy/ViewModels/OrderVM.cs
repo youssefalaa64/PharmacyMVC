@@ -27,6 +27,8 @@ namespace Pharmacy.ViewModels
         public string ApplicationUserId { get; set; } = string.Empty;
         public IEnumerable<SelectListItem> Users { get; set; }
             = new List<SelectListItem>();
+        public IEnumerable<SelectListItem> Products { get; set; }
+           = new List<SelectListItem>();
         public List<OrderItemVM> OrderItems { get; set; }
             = new List<OrderItemVM>();
     }
