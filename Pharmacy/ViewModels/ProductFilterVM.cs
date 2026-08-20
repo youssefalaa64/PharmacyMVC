@@ -14,6 +14,6 @@ namespace Pharmacy.ViewModels
         public int PageSize { get; set; } = 10;
         public int TotalPages { get; set; }
         
-        public IEnumerable<Product> products { get; set; } = new List<Product>();
+        public IEnumerable<Product> Products { get; set; } = new List<Product>();
     }
 }

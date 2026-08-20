@@ -18,7 +18,7 @@ namespace Pharmacy.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(ProductFilterVM productFilterVM, int page=1)
+        public async Task<IActionResult> Index(ProductFilterVM productFilterVM, int page=1)     
         {
             var products = await _repository.GetAllAsync(includes:[p=>p.Category]);
             //filter
@@ -48,7 +48,7 @@ namespace Pharmacy.Areas.Admin.Controllers
 
             return View(new ProductFilterVM()
             {
-                products = products.AsEnumerable(),
+                Products = products.AsEnumerable(),
                 TotalPages = totalPages,
                 Page = page
             });

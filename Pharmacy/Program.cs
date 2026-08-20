@@ -41,7 +41,8 @@ namespace Pharmacy
             builder.Services.AddTransient<IDbInitializer, DbInitializer>();
 
             builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
-
+            
+            builder.Services.AddScoped(typeof(Repository<>), typeof(Repository<>));
 
             var app = builder.Build();
 
