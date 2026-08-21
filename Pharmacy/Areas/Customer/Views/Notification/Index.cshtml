@@ -1,0 +1,163 @@
+﻿@model IEnumerable<Pharmacy.Models.Notification>
+
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                Notifications
+            </h2>
+
+            <p class="text-muted mb-0">
+                Stay updated with your orders and account activity.
+            </p>
+        </div>
+
+        @if (Model.Any(n => !n.IsRead))
+        {
+            <form asp-action="MarkAllAsRead"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit"
+                        class="btn btn-outline-primary">
+
+                    <i class="fa-solid fa-check-double me-1"></i>
+
+                    Mark all as read
+
+                </button>
+
+            </form>
+        }
+
+    </div>
+
+
+    @if (!Model.Any())
+    {
+        <div class="card border-0 shadow-sm rounded-4">
+
+            <div class="card-body text-center py-5">
+
+                <div class="mb-3">
+
+                    <i class="fa-regular fa-bell-slash text-muted"
+                       style="font-size: 50px;">
+                    </i>
+
+                </div>
+
+                <h5 class="fw-bold">
+                    No notifications
+                </h5>
+
+                <p class="text-muted mb-0">
+                    You're all caught up!
+                </p>
+
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm rounded-4">
+
+            <div class="list-group list-group-flush">
+
+                @foreach (var notification in Model)
+                {
+                    <div class="list-group-item
+                        border-0
+                        px-4
+                        py-3
+                        @(notification.IsRead ? "" : "bg-primary-subtle")">
+
+                        <div class="d-flex align-items-start">
+
+                            <div class="me-3">
+
+                                <div class="rounded-circle
+                                    bg-primary-subtle
+                                    text-primary
+                                    d-flex
+                                    align-items-center
+                                    justify-content-center"
+                                     style="width: 42px; height: 42px;">
+
+                                    @if (notification.Type == "Order")
+                                    {
+                                        <i class="fa-solid fa-box"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa-solid fa-bell"></i>
+                                    }
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="flex-grow-1">
+
+                                <div class="fw-semibold">
+                                    @notification.Message
+                                </div>
+
+                                <small class="text-muted">
+
+                                    <i class="fa-regular fa-clock me-1"></i>
+
+                                    @notification.CreatedAt.ToString(
+                                        "dd MMM yyyy, hh:mm tt"
+                                    )
+
+                                </small>
+
+                            </div>
+
+
+                            @if (!notification.IsRead)
+                            {
+                                <form asp-action="MarkAsRead"
+                                      method="post"
+                                      class="ms-3">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@notification.Id" />
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-primary">
+
+                                        <i class="fa-solid fa-check me-1"></i>
+
+                                        Read
+
+                                    </button>
+
+                                </form>
+                            }
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+    }
+
+</div>

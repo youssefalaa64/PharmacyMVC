@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Pharmacy.Enums;
 using Pharmacy.Models;
 using Pharmacy.Repositories;
+using Pharmacy.Services;
 using Pharmacy.Utils;
 using Pharmacy.ViewModels;
 
@@ -16,18 +18,21 @@ namespace Pharmacy.Areas.Admin.Controllers
         private readonly IRepository<Order> _orderrepository;
         private readonly IRepository<OrderItem> _itemRepository;
         private readonly IRepository<Product> _productRepository;
+        private readonly INotificationService _notificationService;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public OrderController(
             IRepository<Order> repository,
             IRepository<OrderItem> itemRepository,
             IRepository<Product> productRepository,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            INotificationService notificationService)
         {
             _orderrepository = repository;
             _itemRepository = itemRepository;
             _productRepository = productRepository;
             _userManager = userManager;
+            _notificationService = notificationService;
         }
 
         // GET: Admin/Order
@@ -422,6 +427,27 @@ namespace Pharmacy.Areas.Admin.Controllers
             _orderrepository.Update(order);
 
             await _orderrepository.CommitAsync();
+            string message = model.Status switch
+            {
+                OrderStatus.Processing =>
+                    $"Your order #{order.OrderNumber} is now being processed.",
+
+                OrderStatus.Completed =>
+                    $"Your order #{order.OrderNumber} has been completed.",
+
+                OrderStatus.Cancelled =>
+                    $"Your order #{order.OrderNumber} has been canceled.",
+
+                _ =>
+                    $"Your order #{order.OrderNumber} status has been changed to {order.Status}."
+            };
+
+            await _notificationService.CreateAsync(
+                order.ApplicationUserId,
+                message,
+                "OrderStatus",
+                order.Id
+            );
 
 
             return RedirectToAction(nameof(Index));

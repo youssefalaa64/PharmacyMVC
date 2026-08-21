@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.DataAccess;
+using Pharmacy.Hubs;
 using Pharmacy.Models;
 using Pharmacy.Repositories;
+using Pharmacy.Services;
 using Pharmacy.Utils;
 using Pharmacy.Utils.DbInitializer;
 using Pharmacy.Utlis.DbInitializer;
@@ -41,7 +43,7 @@ namespace Pharmacy
                 options.LoginPath = "/Identity/Account/Login";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
             });
-
+            builder.Services.AddSignalR();
             builder.Services.AddTransient<IEmailSender, EmailSender>();
             builder.Services.AddTransient<IDbInitializer, DbInitializer>();
             builder.Services.AddScoped<IRepository<Customer>, Repository<Customer>>();
@@ -54,6 +56,9 @@ namespace Pharmacy
             builder.Services.AddScoped<IRepository<OrderItem>, Repository<OrderItem>>();
             builder.Services.AddScoped<IRepository<Cart>, Repository<Cart>>();
             builder.Services.AddScoped<IRepository<CartItem>, Repository<CartItem>>();
+            builder.Services.AddScoped<IRepository<Notification>, Repository<Notification>>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
+            
 
             var app = builder.Build();
 
@@ -70,7 +75,7 @@ namespace Pharmacy
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.MapHub<NotificationHub>("/notificationHub");
             app.UseHttpsRedirection();
             app.UseRouting();
 

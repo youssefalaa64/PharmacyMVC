@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Pharmacy.Enums;
 using Pharmacy.Models;
 using Pharmacy.Repositories;
+using Pharmacy.Services;
 using Pharmacy.Utils;
 using Pharmacy.ViewModels;
 
@@ -19,6 +20,7 @@ namespace Pharmacy.Areas.Customer.Controllers
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<OrderItem> _orderItemRepository;
         private readonly IRepository<ProductBatch> _batchRepository;
+        private readonly INotificationService _notificationService;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public OrderController(
@@ -28,7 +30,8 @@ namespace Pharmacy.Areas.Customer.Controllers
             IRepository<Order> orderRepository,
             IRepository<OrderItem> orderItemRepository,
             IRepository<ProductBatch> batchRepository,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            INotificationService notificationService)
         {
             _cartRepository = cartRepository;
             _cartItemRepository = cartItemRepository;
@@ -37,6 +40,7 @@ namespace Pharmacy.Areas.Customer.Controllers
             _orderItemRepository = orderItemRepository;
             _batchRepository = batchRepository;
             _userManager = userManager;
+            _notificationService = notificationService;
         }
 
 
@@ -371,7 +375,14 @@ namespace Pharmacy.Areas.Customer.Controllers
             await _orderRepository.CreateAsync(order);
 
             await _orderRepository.CommitAsync();
+            await _notificationService.CreateAsync(
+             userId,
+             $"Your order {order.OrderNumber} has been placed successfully.",
+            "Order",
+             order.Id
+                );
 
+           
 
             // ========================================================
             // Create Order Items
@@ -481,10 +492,27 @@ namespace Pharmacy.Areas.Customer.Controllers
 
             await _cartItemRepository.CommitAsync();
 
+            var roles = new[]
+            {
+                CD.SUPER_ADMIN_ROLE,
+                CD.ADMIN_ROLE,
+                CD.PHARMACIST_ROLE
+            };
 
-            // ========================================================
-            // Success
-            // ========================================================
+            foreach (var role in roles)
+            {
+                var users = await _userManager.GetUsersInRoleAsync(role);
+
+                foreach (var user in users)
+                {
+                    await _notificationService.CreateAsync(
+                        user.Id,
+                        $"New order #{order.OrderNumber} has been placed.",
+                        "Order",
+                        order.Id
+                    );
+                }
+            }
 
             TempData["Success_Notification"] =
                 $"Order {order.OrderNumber} placed successfully.";

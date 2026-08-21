@@ -7,5 +7,7 @@ namespace Pharmacy.Models
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string? Address { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
+    = new List<Notification>();
     }
 }

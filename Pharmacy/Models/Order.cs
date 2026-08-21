@@ -26,6 +26,8 @@ namespace Pharmacy.Models
         public string? Notes { get; set; }
         public string ApplicationUserId { get; set; } = string.Empty;
         public ApplicationUser? ApplicationUser { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
+    = new List<Notification>();
         public ICollection<OrderItem> OrderItems { get; set; }
             = new List<OrderItem>();
     }
