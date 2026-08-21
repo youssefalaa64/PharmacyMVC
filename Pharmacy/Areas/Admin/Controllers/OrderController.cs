@@ -226,6 +226,8 @@ namespace Pharmacy.Areas.Admin.Controllers
 
         // GET: Admin/Order/Edit/5
         [HttpGet]
+        // GET: Admin/Order/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var order = await _orderrepository.GetOneAsync(
@@ -268,6 +270,7 @@ namespace Pharmacy.Areas.Admin.Controllers
             };
 
             await LoadUsers(model);
+            await LoadProducts(model);
 
             return View(model);
         }
@@ -280,6 +283,8 @@ namespace Pharmacy.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 await LoadUsers(model);
+                await LoadProducts(model);
+
                 return View(model);
             }
 
@@ -308,10 +313,16 @@ namespace Pharmacy.Areas.Admin.Controllers
                 );
 
                 await LoadUsers(model);
+                await LoadProducts(model);
+
                 return View(model);
             }
 
+
+            // =========================
             // Update Order
+            // =========================
+
             order.OrderNumber = model.OrderNumber;
             order.OrderDate = model.OrderDate;
             order.Status = model.Status;
@@ -322,14 +333,22 @@ namespace Pharmacy.Areas.Admin.Controllers
             order.Notes = model.Notes;
             order.ApplicationUserId = model.ApplicationUserId;
 
-            // Delete old items
+
+            // =========================
+            // Delete Old Items
+            // =========================
+
             foreach (var oldItem in order.OrderItems.ToList())
             {
                 _itemRepository.Delete(oldItem);
             }
 
-            // Add new items
             order.OrderItems.Clear();
+
+
+            // =========================
+            // Add New Items
+            // =========================
 
             decimal total = 0;
 
@@ -343,8 +362,11 @@ namespace Pharmacy.Areas.Admin.Controllers
                     );
 
                     await LoadUsers(model);
+                    await LoadProducts(model);
+
                     return View(model);
                 }
+
 
                 var product = await _productRepository.GetOneAsync(
                     filter: p => p.Id == itemVM.ProductId
@@ -358,22 +380,32 @@ namespace Pharmacy.Areas.Admin.Controllers
                     );
 
                     await LoadUsers(model);
+                    await LoadProducts(model);
+
                     return View(model);
                 }
 
+
+                // Get price from database
                 var item = new OrderItem
                 {
                     OrderId = order.Id,
-                    ProductId = itemVM.ProductId,
+                    ProductId = product.Id,
                     Quantity = itemVM.Quantity,
-                    UnitPrice = itemVM.UnitPrice,
-                    TotalPrice = itemVM.Quantity * itemVM.UnitPrice
+                    UnitPrice = product.Price,
+                    TotalPrice = itemVM.Quantity * product.Price
                 };
+
 
                 total += item.TotalPrice;
 
                 order.OrderItems.Add(item);
             }
+
+
+            // =========================
+            // Calculate Totals
+            // =========================
 
             order.TotalAmount = total;
 
@@ -382,9 +414,15 @@ namespace Pharmacy.Areas.Admin.Controllers
                 - order.Discount
                 + order.DeliveryFees;
 
+
+            // =========================
+            // Save
+            // =========================
+
             _orderrepository.Update(order);
 
             await _orderrepository.CommitAsync();
+
 
             return RedirectToAction(nameof(Index));
         }
@@ -462,7 +500,6 @@ namespace Pharmacy.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
         private async Task LoadUsers(OrderVM model)
         {
             var users = _userManager.Users.ToList();
@@ -474,5 +511,16 @@ namespace Pharmacy.Areas.Admin.Controllers
                 Selected = u.Id == model.ApplicationUserId
             });
         }
+        private async Task LoadProducts(OrderVM model)
+        {
+            var products = await _productRepository.GetAllAsync();
+
+            model.Products = products.Select(p => new SelectListItem
+            {
+                Value = p.Id.ToString(),
+                Text = $"{p.Name} - {p.Price:0.00} EGP"
+            }).ToList();
+        }
+
     }
 }

@@ -207,10 +207,18 @@
 
                                         @foreach (var product in Model.Products)
                                         {
-                                            <option value="@product.Value"
-                                                    selected="@(product.Value == Model.OrderItems[i].ProductId.ToString())">
-                                                @product.Text
-                                            </option>
+                                            if (product.Value == Model.OrderItems[i].ProductId.ToString())
+                                            {
+                                                <option value="@product.Value" selected>
+                                                    @product.Text
+                                                </option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@product.Value">
+                                                    @product.Text
+                                                </option>
+                                            }
                                         }
 
                                     </select>
