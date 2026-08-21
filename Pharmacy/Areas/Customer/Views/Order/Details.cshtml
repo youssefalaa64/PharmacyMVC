@@ -1,0 +1,689 @@
+﻿@model Pharmacy.ViewModels.OrderVM
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="container-fluid px-4 px-lg-5 py-4">
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="d-flex flex-column flex-md-row
+        justify-content-between
+        align-items-md-center
+        gap-3 mb-4">
+
+        <div>
+
+            <a asp-area="Customer"
+               asp-controller="Order"
+               asp-action="Index"
+               class="text-decoration-none text-muted small">
+
+                <i class="fa-solid fa-arrow-left me-1"></i>
+                Back to My Orders
+
+            </a>
+
+            <h2 class="fw-bold mt-2 mb-1">
+
+                <i class="fa-solid fa-receipt text-primary me-2"></i>
+
+                Order Details
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Order #@Model.OrderNumber
+
+            </p>
+
+        </div>
+
+
+        <div>
+
+            @switch (Model.Status)
+            {
+                case Pharmacy.Enums.OrderStatus.Pending:
+
+                    <span class="status-badge status-pending">
+
+                        <i class="fa-solid fa-clock me-1"></i>
+
+                        Pending
+
+                    </span>
+
+                    break;
+
+
+                case Pharmacy.Enums.OrderStatus.Processing:
+
+                    <span class="status-badge status-confirmed">
+
+                        <i class="fa-solid fa-circle-check me-1"></i>
+
+                        Processing
+
+                    </span>
+
+                    break;
+
+
+                case Pharmacy.Enums.OrderStatus.Completed:
+
+                    <span class="status-badge status-completed">
+
+                        <i class="fa-solid fa-check-double me-1"></i>
+
+                        Completed
+
+                    </span>
+
+                    break;
+
+
+                case Pharmacy.Enums.OrderStatus.Cancelled:
+
+                    <span class="status-badge status-cancelled">
+
+                        <i class="fa-solid fa-xmark me-1"></i>
+
+                        Cancelled
+
+                    </span>
+
+                    break;
+
+
+                default:
+
+                    <span class="status-badge status-pending">
+                        @Model.Status
+                    </span>
+
+                    break;
+            }
+
+        </div>
+
+    </div>
+
+
+    <div class="row g-4">
+
+
+        <!-- ================= ORDER ITEMS ================= -->
+
+        <div class="col-lg-8">
+
+            <div class="details-card">
+
+                <div class="card-title-section">
+
+                    <div>
+
+                        <h5 class="fw-bold mb-1">
+
+                            <i class="fa-solid fa-box-open text-primary me-2"></i>
+
+                            Order Items
+
+                        </h5>
+
+                        <p class="text-muted small mb-0">
+
+                            @Model.OrderItems.Sum(x => x.Quantity) item(s)
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="items-container">
+
+                    @if (Model.OrderItems != null &&
+                         Model.OrderItems.Any())
+                    {
+                        @foreach (var item in Model.OrderItems)
+                        {
+                            <div class="order-item">
+
+                                <!-- Product Icon -->
+
+                                <div class="product-icon">
+
+                                    <i class="fa-solid fa-box"></i>
+
+                                </div>
+
+
+                                <!-- Product Info -->
+
+                                <div class="product-info">
+
+                                    <h6 class="fw-bold mb-1">
+
+                                        @(item.ProductName ?? "Product")
+
+                                    </h6>
+
+                                    <div class="text-muted small">
+
+                                        @item.UnitPrice.ToString("0.00")
+                                        EGP × @item.Quantity
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Total -->
+
+                                <div class="item-total">
+
+                                    @item.TotalPrice.ToString("0.00")
+
+                                    <small>EGP</small>
+
+                                </div>
+
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-4 text-muted">
+
+                            <i class="fa-solid fa-box-open fs-2 mb-2"></i>
+
+                            <p class="mb-0">
+                                No items found for this order.
+                            </p>
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= DELIVERY ================= -->
+
+            <div class="details-card mt-4">
+
+                <div class="card-title-section">
+
+                    <h5 class="fw-bold mb-0">
+
+                        <i class="fa-solid fa-truck text-primary me-2"></i>
+
+                        Delivery Information
+
+                    </h5>
+
+                </div>
+
+
+                <div class="delivery-info">
+
+                    <div class="info-row">
+
+                        <div class="info-icon">
+
+                            <i class="fa-solid fa-location-dot"></i>
+
+                        </div>
+
+                        <div>
+
+                            <div class="text-muted small">
+                                Delivery Address
+                            </div>
+
+                            <div class="fw-semibold">
+
+                                @Model.DeliveryAddress
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Notes))
+                    {
+                        <div class="info-row mt-3">
+
+                            <div class="info-icon">
+
+                                <i class="fa-solid fa-note-sticky"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="text-muted small">
+                                    Notes
+                                </div>
+
+                                <div class="fw-semibold">
+
+                                    @Model.Notes
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= ORDER SUMMARY ================= -->
+
+        <div class="col-lg-4">
+
+            <div class="details-card summary-card">
+
+                <div class="card-title-section">
+
+                    <h5 class="fw-bold mb-0">
+
+                        <i class="fa-solid fa-file-invoice-dollar
+                        text-primary me-2"></i>
+
+                        Order Summary
+
+                    </h5>
+
+                </div>
+
+
+                <div class="summary-body">
+
+                    <!-- Order Date -->
+
+                    <div class="summary-info">
+
+                        <span class="text-muted">
+                            Order Date
+                        </span>
+
+                        <span class="fw-semibold">
+
+                            @Model.OrderDate.ToString("dd MMM yyyy")
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- Payment -->
+
+                    <div class="summary-info">
+
+                        <span class="text-muted">
+                            Payment Method
+                        </span>
+
+                        <span class="fw-semibold">
+
+                            <i class="fa-solid fa-credit-card me-1"></i>
+
+                            @Model.PaymentMethod
+
+                        </span>
+
+                    </div>
+
+
+                    <hr />
+
+
+                    <!-- Subtotal -->
+
+                    <div class="summary-info">
+
+                        <span class="text-muted">
+                            Subtotal
+                        </span>
+
+                        <span class="fw-semibold">
+
+                            @Model.TotalAmount.ToString("0.00")
+                            EGP
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- Discount -->
+                    @if (Model.Discount > 0)
+                    {
+                        <div class="summary-info">
+
+                            <span class="text-muted">
+                                Discount
+                            </span>
+
+                            <span class="text-success fw-semibold">
+
+                                - @Model.Discount.ToString("0.00")
+                                EGP
+
+                            </span>
+
+                        </div>
+                    }
+
+
+                    <!-- Delivery -->
+
+                    <div class="summary-info">
+
+                        <span class="text-muted">
+                            Delivery Fees
+                        </span>
+
+                        <span class="fw-semibold">
+
+                            @Model.DeliveryFees.ToString("0.00")
+                            EGP
+
+                        </span>
+
+                    </div>
+
+
+                    <hr />
+
+
+                    <!-- Net Amount -->
+
+                    <div class="total-row">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <span>
+
+                            @Model.NetAmount.ToString("0.00")
+
+                            <small>EGP</small>
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= ACTIONS ================= -->
+
+            <div class="d-grid gap-2 mt-3">
+
+                <a asp-area="Customer"
+                   asp-controller="Order"
+                   asp-action="Index"
+                   class="btn btn-outline-primary rounded-3 py-2">
+
+                    <i class="fa-solid fa-list me-2"></i>
+
+                    My Orders
+
+                </a>
+
+
+                <a asp-area="Customer"
+                   asp-controller="Product"
+                   asp-action="Index"
+                   class="btn btn-primary rounded-3 py-2">
+
+                    <i class="fa-solid fa-store me-2"></i>
+
+                    Continue Shopping
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    /* =========================
+           GENERAL CARD
+           ========================= */
+
+    .details-card {
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 18px;
+        overflow: hidden;
+    }
+
+
+    /* =========================
+           CARD HEADER
+           ========================= */
+
+    .card-title-section {
+        padding: 20px 24px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+
+    /* =========================
+           ORDER ITEMS
+           ========================= */
+
+    .items-container {
+        padding: 0 24px;
+    }
+
+
+    .order-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 20px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+
+    .product-icon {
+        width: 55px;
+        height: 55px;
+        flex-shrink: 0;
+        border-radius: 14px;
+        background: #f1f6ff;
+        color: var(--bs-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+    }
+
+
+    .product-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+
+        .product-info h6 {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+    .item-total {
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+        .item-total small {
+            font-weight: 500;
+            color: #6c757d;
+        }
+
+
+    /* =========================
+           DELIVERY
+           ========================= */
+
+    .delivery-info {
+        padding: 24px;
+    }
+
+
+    .info-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+
+    .info-icon {
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+        border-radius: 10px;
+        background: #f1f6ff;
+        color: var(--bs-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    /* =========================
+           SUMMARY
+           ========================= */
+
+    .summary-body {
+        padding: 24px;
+    }
+
+
+    .summary-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 16px;
+    }
+
+
+        .summary-info:last-child {
+            margin-bottom: 0;
+        }
+
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+
+        .total-row span:last-child {
+            color: var(--bs-success);
+        }
+
+
+        .total-row small {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+
+    /* =========================
+           STATUS
+           ========================= */
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+
+    .status-pending {
+        background: #fff3cd;
+        color: #997404;
+    }
+
+
+    .status-confirmed {
+        background: #cfe2ff;
+        color: #084298;
+    }
+
+
+    .status-completed {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+
+    .status-cancelled {
+        background: #f8d7da;
+        color: #842029;
+    }
+
+
+    /* =========================
+           MOBILE
+           ========================= */
+
+    @@media (max-width: 767px) {
+
+        .order-item {
+            align-items: flex-start;
+        }
+
+        .item-total {
+            font-size: 14px;
+        }
+
+        .summary-info {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 3px;
+        }
+    }
+
+</style>

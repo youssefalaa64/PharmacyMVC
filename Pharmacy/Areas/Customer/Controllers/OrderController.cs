@@ -18,6 +18,7 @@ namespace Pharmacy.Areas.Customer.Controllers
         private readonly IRepository<Product> _productRepository;
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<OrderItem> _orderItemRepository;
+        private readonly IRepository<ProductBatch> _batchRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public OrderController(
@@ -26,6 +27,7 @@ namespace Pharmacy.Areas.Customer.Controllers
             IRepository<Product> productRepository,
             IRepository<Order> orderRepository,
             IRepository<OrderItem> orderItemRepository,
+            IRepository<ProductBatch> batchRepository,
             UserManager<ApplicationUser> userManager)
         {
             _cartRepository = cartRepository;
@@ -33,13 +35,14 @@ namespace Pharmacy.Areas.Customer.Controllers
             _productRepository = productRepository;
             _orderRepository = orderRepository;
             _orderItemRepository = orderItemRepository;
+            _batchRepository = batchRepository;
             _userManager = userManager;
         }
 
 
-        // ==========================================
+        // ============================================================
         // GET: Customer/Order/Checkout
-        // ==========================================
+        // ============================================================
 
         [HttpGet]
         public async Task<IActionResult> Checkout()
@@ -106,9 +109,9 @@ namespace Pharmacy.Areas.Customer.Controllers
                 {
                     ProductId = product.Id,
                     ProductName = product.Name,
-                    UnitPrice = item.UnitPrice,
+                    UnitPrice = product.Price,
                     Quantity = item.Quantity,
-                    TotalPrice = item.TotalPrice
+                    TotalPrice = item.Quantity * product.Price
                 });
             }
 
@@ -130,9 +133,9 @@ namespace Pharmacy.Areas.Customer.Controllers
         }
 
 
-        // ==========================================
+        // ============================================================
         // POST: Customer/Order/Checkout
-        // ==========================================
+        // ============================================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -147,11 +150,13 @@ namespace Pharmacy.Areas.Customer.Controllers
             }
 
 
-            // Get current user's cart
+            // ========================================================
+            // Get Cart
+            // ========================================================
+
             var cart = await _cartRepository.GetOneAsync(
                 filter: c => c.ApplicationUserId == userId
             );
-
 
             if (cart == null)
             {
@@ -165,11 +170,13 @@ namespace Pharmacy.Areas.Customer.Controllers
             }
 
 
+            // ========================================================
             // Get Cart Items
+            // ========================================================
+
             var cartItems = await _cartItemRepository.GetAllAsync(
                 filter: ci => ci.CartId == cart.Id
             );
-
 
             if (!cartItems.Any())
             {
@@ -183,10 +190,11 @@ namespace Pharmacy.Areas.Customer.Controllers
             }
 
 
-            // ==========================================
-            // Recalculate everything on the server
-            // Don't trust prices coming from the View
-            // ==========================================
+            // ========================================================
+            // Prepare Checkout Items
+            // ========================================================
+
+            checkoutVM.Items = new List<CheckoutItemVM>();
 
             decimal totalAmount = 0;
 
@@ -195,24 +203,92 @@ namespace Pharmacy.Areas.Customer.Controllers
             {
                 var product = await _productRepository.GetOneAsync(
                     filter: p => p.Id == item.ProductId,
+                    includes: [p => p.Batches],
                     IsTracking: false
                 );
 
                 if (product == null)
                 {
+                    ModelState.AddModelError(
+                        "",
+                        $"Product #{item.ProductId} was not found."
+                    );
+
                     continue;
                 }
 
 
                 // Get latest product price
-                item.UnitPrice = product.Price;
+                decimal currentPrice = product.Price;
 
-                item.TotalPrice =
-                    item.Quantity * item.UnitPrice;
 
-                totalAmount += item.TotalPrice;
+                // Recalculate item total
+                decimal itemTotal =
+                    item.Quantity * currentPrice;
+
+
+                checkoutVM.Items.Add(new CheckoutItemVM
+                {
+                    ProductId = product.Id,
+                    ProductName = product.Name,
+                    UnitPrice = currentPrice,
+                    Quantity = item.Quantity,
+                    TotalPrice = itemTotal
+                });
+
+
+                totalAmount += itemTotal;
             }
 
+
+            // ========================================================
+            // STOCK VALIDATION
+            // ========================================================
+
+            bool stockIsValid = true;
+
+
+            foreach (var item in cartItems)
+            {
+                var product = await _productRepository.GetOneAsync(
+                    filter: p => p.Id == item.ProductId,
+                    includes: [p => p.Batches],
+                    IsTracking: false
+                );
+
+                if (product == null)
+                {
+                    stockIsValid = false;
+
+                    continue;
+                }
+
+
+                // Only valid, non-expired batches
+                int availableStock = product.Batches
+                    .Where(b =>
+                        b.ExpiryDate.Date >= DateTime.Today &&
+                        b.QuantityOnHand > 0)
+                    .Sum(b => b.QuantityOnHand);
+
+
+                // Requested quantity is greater than available stock
+                if (item.Quantity > availableStock)
+                {
+                    stockIsValid = false;
+
+
+                    ModelState.AddModelError(
+                        "",
+                        $"{product.Name}: only {availableStock} item(s) are available."
+                    );
+                }
+            }
+
+
+            // ========================================================
+            // Discount & Delivery
+            // ========================================================
 
             decimal discount = checkoutVM.Discount;
 
@@ -222,7 +298,6 @@ namespace Pharmacy.Areas.Customer.Controllers
             }
 
 
-            // Don't allow discount greater than total
             if (discount > totalAmount)
             {
                 discount = totalAmount;
@@ -243,54 +318,33 @@ namespace Pharmacy.Areas.Customer.Controllers
                 + deliveryFees;
 
 
-            // ==========================================
-            // Validate Model
-            // ==========================================
+            checkoutVM.TotalAmount = totalAmount;
 
-            if (!ModelState.IsValid)
+            checkoutVM.Discount = discount;
+
+            checkoutVM.DeliveryFees = deliveryFees;
+
+            checkoutVM.NetAmount = netAmount;
+
+
+            // ========================================================
+            // Model Validation
+            // ========================================================
+
+            if (!ModelState.IsValid || !stockIsValid)
             {
-                checkoutVM.Items = new List<CheckoutItemVM>();
-
-                foreach (var item in cartItems)
-                {
-                    var product = await _productRepository.GetOneAsync(
-                        filter: p => p.Id == item.ProductId,
-                        IsTracking: false
-                    );
-
-                    if (product == null)
-                    {
-                        continue;
-                    }
-
-                    checkoutVM.Items.Add(new CheckoutItemVM
-                    {
-                        ProductId = product.Id,
-                        ProductName = product.Name,
-                        UnitPrice = product.Price,
-                        Quantity = item.Quantity,
-                        TotalPrice =
-                            item.Quantity * product.Price
-                    });
-                }
-
-
-                checkoutVM.TotalAmount = totalAmount;
-                checkoutVM.DeliveryFees = deliveryFees;
-                checkoutVM.Discount = discount;
-                checkoutVM.NetAmount = netAmount;
-
                 return View(checkoutVM);
             }
 
 
-            // ==========================================
+            // ========================================================
             // Create Order
-            // ==========================================
+            // ========================================================
 
             var order = new Order
             {
-                OrderNumber = $"ORD-{DateTime.Now:yyyyMMddHHmmssfff}",
+                OrderNumber =
+                    $"ORD-{DateTime.Now:yyyyMMddHHmmssfff}",
 
                 OrderDate = DateTime.Now,
 
@@ -304,7 +358,8 @@ namespace Pharmacy.Areas.Customer.Controllers
 
                 NetAmount = netAmount,
 
-                PaymentMethod = checkoutVM.PaymentMethod,
+                PaymentMethod =
+                    checkoutVM.PaymentMethod,
 
                 DeliveryAddress =
                     checkoutVM.DeliveryAddress,
@@ -318,15 +373,16 @@ namespace Pharmacy.Areas.Customer.Controllers
             await _orderRepository.CommitAsync();
 
 
-            // ==========================================
+            // ========================================================
             // Create Order Items
-            // ==========================================
+            // ========================================================
 
             foreach (var item in cartItems)
             {
                 var product = await _productRepository.GetOneAsync(
                     filter: p => p.Id == item.ProductId,
-                    IsTracking: false
+                    includes: [p => p.Batches],
+                    IsTracking: true
                 );
 
                 if (product == null)
@@ -351,15 +407,71 @@ namespace Pharmacy.Areas.Customer.Controllers
 
 
                 await _orderItemRepository.CreateAsync(orderItem);
+
+
+                // ====================================================
+                // Deduct Stock using FEFO
+                // ====================================================
+
+                int remainingQuantity =
+                    item.Quantity;
+
+
+                var batches = product.Batches
+                    .Where(b =>
+                        b.ExpiryDate.Date >= DateTime.Today &&
+                        b.QuantityOnHand > 0)
+                    .OrderBy(b => b.ExpiryDate)
+                    .ToList();
+
+
+                foreach (var batch in batches)
+                {
+                    if (remainingQuantity <= 0)
+                    {
+                        break;
+                    }
+
+
+                    int quantityToDeduct =
+                        Math.Min(
+                            batch.QuantityOnHand,
+                            remainingQuantity
+                        );
+
+
+                    batch.QuantityOnHand -=
+                        quantityToDeduct;
+
+
+                    remainingQuantity -=
+                        quantityToDeduct;
+                }
+
+
+                if (remainingQuantity > 0)
+                {
+                    // This should normally never happen
+                    // because stock was validated above.
+
+                    TempData["Error_Notification"] =
+                        $"Insufficient stock for {product.Name}.";
+
+                    return RedirectToAction(
+                        "Index",
+                        "Cart"
+                    );
+                }
             }
 
 
+            // Save OrderItems + Batch changes
             await _orderItemRepository.CommitAsync();
 
 
-            // ==========================================
+            // ========================================================
             // Clear Cart
-            // ==========================================
+            // ========================================================
 
             foreach (var item in cartItems)
             {
@@ -369,6 +481,10 @@ namespace Pharmacy.Areas.Customer.Controllers
 
             await _cartItemRepository.CommitAsync();
 
+
+            // ========================================================
+            // Success
+            // ========================================================
 
             TempData["Success_Notification"] =
                 $"Order {order.OrderNumber} placed successfully.";
@@ -381,9 +497,9 @@ namespace Pharmacy.Areas.Customer.Controllers
         }
 
 
-        // ==========================================
+        // ============================================================
         // GET: Customer/Order/Success/5
-        // ==========================================
+        // ============================================================
 
         [HttpGet]
         public async Task<IActionResult> Success(int id)
@@ -410,6 +526,165 @@ namespace Pharmacy.Areas.Customer.Controllers
 
 
             return View(order);
+        }
+
+
+        // ============================================================
+        // GET: Customer/Order/Index
+        // ============================================================
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var userId = _userManager.GetUserId(User);
+
+            if (userId == null)
+            {
+                return Challenge();
+            }
+
+
+            var orders = await _orderRepository.GetAllAsync(
+                filter: o =>
+                    o.ApplicationUserId == userId,
+                includes: [o => o.OrderItems],
+                IsTracking: false
+            );
+
+
+            var model = orders
+                .OrderByDescending(o => o.OrderDate)
+                .Select(o => new OrderVM
+                {
+                    Id = o.Id,
+                    OrderNumber = o.OrderNumber,
+                    OrderDate = o.OrderDate,
+                    Status = o.Status,
+                    TotalAmount = o.TotalAmount,
+                    Discount = o.Discount,
+                    DeliveryFees = o.DeliveryFees,
+                    NetAmount = o.NetAmount,
+                    PaymentMethod = o.PaymentMethod,
+                    DeliveryAddress = o.DeliveryAddress,
+                    Notes = o.Notes,
+                    ApplicationUserId = o.ApplicationUserId,
+
+                    OrderItems = o.OrderItems
+                        .Select(item => new OrderItemVM
+                        {
+                            Id = item.Id,
+                            ProductId = item.ProductId,
+                            Quantity = item.Quantity,
+                            UnitPrice = item.UnitPrice,
+                            TotalPrice = item.TotalPrice
+                        })
+                        .ToList()
+                })
+                .ToList();
+
+
+            return View(model);
+        }
+
+
+        // ============================================================
+        // GET: Customer/Order/Details/5
+        // ============================================================
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var userId = _userManager.GetUserId(User);
+
+            if (userId == null)
+            {
+                return Challenge();
+            }
+
+
+            var order = await _orderRepository.GetOneAsync(
+                filter: o =>
+                    o.Id == id &&
+                    o.ApplicationUserId == userId,
+
+                includes:
+                [
+                    o => o.OrderItems
+                ],
+
+                IsTracking: false
+            );
+
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+
+            var model = new OrderVM
+            {
+                Id = order.Id,
+
+                OrderNumber =
+                    order.OrderNumber,
+
+                OrderDate =
+                    order.OrderDate,
+
+                Status =
+                    order.Status,
+
+                TotalAmount =
+                    order.TotalAmount,
+
+                Discount =
+                    order.Discount,
+
+                DeliveryFees =
+                    order.DeliveryFees,
+
+                NetAmount =
+                    order.NetAmount,
+
+                PaymentMethod =
+                    order.PaymentMethod,
+
+                DeliveryAddress =
+                    order.DeliveryAddress,
+
+                Notes =
+                    order.Notes,
+
+                ApplicationUserId =
+                    order.ApplicationUserId,
+
+                OrderItems =
+                    order.OrderItems
+                        .Select(item => new OrderItemVM
+                        {
+                            Id = item.Id,
+
+                            ProductId =
+                                item.ProductId,
+
+                            ProductName =
+                                item.Product?.Name,
+
+                            Quantity =
+                                item.Quantity,
+
+                            UnitPrice =
+                                item.UnitPrice,
+
+                            TotalPrice =
+                                item.TotalPrice
+                        })
+                        .ToList()
+            };
+
+
+            return View(model);
         }
     }
 }

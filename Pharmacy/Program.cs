@@ -79,7 +79,7 @@ namespace Pharmacy
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{area=customer}/{controller=Product}/{action=index}/{id?}")
+                pattern: "{area=customer}/{controller=home}/{action=index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

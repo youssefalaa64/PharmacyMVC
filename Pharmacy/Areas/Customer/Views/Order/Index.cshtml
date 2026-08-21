@@ -1,0 +1,445 @@
+﻿@model IEnumerable<Pharmacy.ViewModels.OrderVM>
+
+@{
+    ViewData["Title"] = "My Orders";
+}
+
+<div class="container-fluid px-4 px-lg-5 py-4">
+
+    <!-- Header -->
+
+    <div class="d-flex flex-column flex-md-row
+        justify-content-between
+        align-items-md-center
+        gap-3 mb-4">
+
+        <div>
+
+            <h2 class="fw-bold mb-1">
+
+                <i class="fa-solid fa-bag-shopping text-primary me-2"></i>
+
+                My Orders
+
+            </h2>
+
+            <p class="text-muted mb-0">
+                Track and manage your orders
+            </p>
+
+        </div>
+
+        <a asp-area="Customer"
+           asp-controller="Product"
+           asp-action="Index"
+           class="btn btn-primary rounded-3 px-4">
+
+            <i class="fa-solid fa-store me-2"></i>
+
+            Continue Shopping
+
+        </a>
+
+    </div>
+
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4">
+
+            @foreach (var order in Model)
+            {
+                <div class="col-12">
+
+                    <div class="order-card">
+
+                        <!-- Order Header -->
+
+                        <div class="order-header">
+
+                            <div>
+
+                                <div class="text-muted small mb-1">
+                                    Order
+                                </div>
+
+                                <h5 class="fw-bold mb-0">
+                                    #@order.OrderNumber
+                                </h5>
+
+                            </div>
+
+
+                            <div class="text-md-end">
+
+                                <div class="text-muted small mb-1">
+                                    Order Date
+                                </div>
+
+                                <div class="fw-semibold">
+
+                                    @order.OrderDate.ToString("dd MMM yyyy")
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Order Body -->
+
+                        <div class="order-body">
+
+                            <div class="row align-items-center g-4">
+
+                                <!-- Status -->
+
+                                <div class="col-md-3">
+
+                                    <div class="text-muted small mb-2">
+                                        Status
+                                    </div>
+
+                                    @switch (order.Status)
+                                    {
+                                        case Pharmacy.Enums.OrderStatus.Pending:
+
+                                            <span class="status-badge status-pending">
+
+                                                <i class="fa-solid fa-clock me-1"></i>
+
+                                                Pending
+
+                                            </span>
+
+                                            break;
+
+
+                                        case Pharmacy.Enums.OrderStatus.Processing:
+
+                                            <span class="status-badge status-confirmed">
+
+                                                <i class="fa-solid fa-circle-check me-1"></i>
+
+                                                Processing
+
+                                            </span>
+
+                                            break;
+
+
+                                        case Pharmacy.Enums.OrderStatus.Completed:
+
+                                            <span class="status-badge status-completed">
+
+                                                <i class="fa-solid fa-check-double me-1"></i>
+
+                                                Completed
+
+                                            </span>
+
+                                            break;
+
+
+                                        case Pharmacy.Enums.OrderStatus.Cancelled:
+
+                                            <span class="status-badge status-cancelled">
+
+                                                <i class="fa-solid fa-xmark me-1"></i>
+
+                                                Cancelled
+
+                                            </span>
+
+                                            break;
+
+
+                                        default:
+
+                                            <span class="status-badge status-pending">
+
+                                                @order.Status
+
+                                            </span>
+
+                                            break;
+                                    }
+
+                                </div>
+
+
+                                <!-- Items -->
+
+                                <div class="col-md-3">
+
+                                    <div class="text-muted small mb-2">
+                                        Items
+                                    </div>
+
+                                    <div class="fw-semibold">
+
+                                        <i class="fa-solid fa-box me-1 text-muted"></i>
+
+                                        @order.OrderItems.Sum(x => x.Quantity)
+
+                                        item(s)
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Payment -->
+
+                                <div class="col-md-3">
+
+                                    <div class="text-muted small mb-2">
+                                        Payment
+                                    </div>
+
+                                    <div class="fw-semibold">
+
+                                        <i class="fa-solid fa-credit-card me-1 text-muted"></i>
+
+                                        @order.PaymentMethod
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Total -->
+
+                                <div class="col-md-3">
+
+                                    <div class="text-muted small mb-2">
+                                        Total
+                                    </div>
+
+                                    <div class="fw-bold fs-5 text-success">
+
+                                        @order.NetAmount.ToString("0.00")
+
+                                        <small>EGP</small>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Footer -->
+
+                        <div class="order-footer">
+
+                            <div class="text-muted small">
+
+                                <i class="fa-solid fa-location-dot me-1"></i>
+
+                                @order.DeliveryAddress
+
+                            </div>
+
+
+                            <a asp-area="Customer"
+                               asp-controller="Order"
+                               asp-action="Details"
+                               asp-route-id="@order.Id"
+                               class="btn btn-outline-primary rounded-3 px-3">
+
+                                View Details
+
+                                <i class="fa-solid fa-arrow-right ms-1"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+    else
+    {
+        <!-- Empty -->
+
+        <div class="empty-orders text-center">
+
+            <div class="empty-orders-icon">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+            </div>
+
+            <h4 class="fw-bold mt-4">
+                No Orders Yet
+            </h4>
+
+            <p class="text-muted mb-4">
+                You haven't placed any orders yet.
+                Start shopping and your orders will appear here.
+            </p>
+
+            <a asp-area="Customer"
+               asp-controller="Product"
+               asp-action="Index"
+               class="btn btn-primary rounded-3 px-4">
+
+                <i class="fa-solid fa-store me-2"></i>
+
+                Start Shopping
+
+            </a>
+
+        </div>
+    }
+
+</div>
+
+
+<style>
+
+    /* =========================
+           ORDER CARD
+           ========================= */
+
+    .order-card {
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 18px;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+
+    /* =========================
+           HEADER
+           ========================= */
+
+    .order-header {
+        padding: 20px 24px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+
+    /* =========================
+           BODY
+           ========================= */
+
+    .order-body {
+        padding: 24px;
+    }
+
+
+    /* =========================
+           FOOTER
+           ========================= */
+
+    .order-footer {
+        padding: 16px 24px;
+        border-top: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+    }
+
+
+    /* =========================
+           STATUS
+           ========================= */
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .status-pending {
+        background: #fff3cd;
+        color: #997404;
+    }
+
+    .status-confirmed {
+        background: #cfe2ff;
+        color: #084298;
+    }
+
+    .status-completed {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .status-cancelled {
+        background: #f8d7da;
+        color: #842029;
+    }
+
+
+    /* =========================
+           EMPTY
+           ========================= */
+
+    .empty-orders {
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 20px;
+        padding: 70px 20px;
+    }
+
+    .empty-orders-icon {
+        width: 90px;
+        height: 90px;
+        margin: auto;
+        border-radius: 50%;
+        background: #f1f6ff;
+        color: var(--bs-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+    }
+
+
+    /* =========================
+           MOBILE
+           ========================= */
+
+    @@media (max-width: 767px) {
+
+        .order-header {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .order-footer {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+            .order-footer .btn {
+                width: 100%;
+            }
+    }
+
+</style>
