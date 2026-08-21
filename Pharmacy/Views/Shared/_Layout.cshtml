@@ -1,257 +1,550 @@
 ﻿@using Pharmacy.Utils
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
+
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Pharmacy Care System</title>
 
-    <!-- Bootstrap 5.3 Standard CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- Google Font (Inter) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - PharmaCare</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: #f8f9fa;
+            }
+
+            .navbar-brand {
+                letter-spacing: .3px;
+            }
+
+            .nav-link {
+                transition: .2s ease;
+            }
+
+                .nav-link:hover {
+                    color: #0d6efd !important;
+                }
+
+            .cart-link {
+                position: relative;
+            }
+
+            .cart-badge {
+                font-size: 10px;
+                min-width: 18px;
+                height: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .dropdown-menu {
+                border-radius: 10px;
+            }
+
+            .dropdown-item {
+                padding: 9px 15px;
+            }
+
+                .dropdown-item:hover {
+                    background-color: #f1f3f5;
+                }
+
+            main {
+                min-height: calc(100vh - 130px);
+            }
+
+            footer {
+                background: white;
+            }
+
+    </style>
+
 </head>
-<body class="bg-light d-flex flex-column min-vh-100" style="font-family: 'Inter', sans-serif;">
 
-    <!-- ================= TOP NAVBAR (Universal for All Users) ================= -->
-    <header class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm px-3 sticky-top">
-        <div class="container-fluid">
 
-            <!-- Brand Logo -->
-            <a asp-controller="Home" asp-action="Index" class="navbar-brand d-flex align-items-center fw-bold text-primary">
-                <i class="fa-solid fa-prescription-bottle-medical fs-4 me-2 text-primary"></i>
-                <span class="text-white">Pharma<span class="text-primary">Care</span></span>
+<body class="d-flex flex-column min-vh-100">
+
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
+
+        <div class="container-fluid px-3 px-lg-4">
+
+
+            <!-- BRAND -->
+
+            <a asp-area="Customer"
+               asp-controller="Home"
+               asp-action="Index"
+               class="navbar-brand d-flex align-items-center fw-bold">
+
+                <i class="fa-solid fa-prescription-bottle-medical
+                fs-4 me-2 text-primary"></i>
+
+                <span class="text-white">
+                    Pharma<span class="text-primary">Care</span>
+                </span>
+
             </a>
 
-            <!-- Toggle Button for Mobile -->
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+
+            <!-- MOBILE TOGGLE -->
+
+            <button class="navbar-toggler border-0"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#customerNavbar">
+
                 <span class="navbar-toggler-icon"></span>
+
             </button>
 
-            <div class="collapse navbar-collapse" id="mainNavbar">
 
-                <!-- ================= CUSTOMER NAV LINKS (Public / Customer Portal) ================= -->
+            <!-- NAVBAR CONTENT -->
+
+            <div class="collapse navbar-collapse"
+                 id="customerNavbar">
+
+
+                <!-- ================= MAIN LINKS ================= -->
+
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+
+                    <!-- HOME -->
+
                     <li class="nav-item">
-                        <a asp-controller="Home" asp-action="Index" class="nav-link text-light">
-                            <i class="fa-solid fa-house me-1"></i> Home
+
+                        <a asp-area="Customer"
+                           asp-controller="Home"
+                           asp-action="Index"
+                           class="nav-link text-light">
+
+                            <i class="fa-solid fa-house me-1"></i>
+
+                            Home
+
                         </a>
+
                     </li>
+
+
+                    <!-- PRODUCTS -->
+
                     <li class="nav-item">
-                        <a asp-controller="Shop" asp-action="Index" class="nav-link text-light">
-                            <i class="fa-solid fa-capsules me-1"></i> Browse Medicines
+
+                        <a asp-area="Customer"
+                           asp-controller="Product"
+                           asp-action="Index"
+                           class="nav-link text-light">
+
+                            <i class="fa-solid fa-capsules me-1"></i>
+
+                            Medicines
+
                         </a>
+
                     </li>
+
+
+                    <!-- MY ORDERS -->
+
+                    <li class="nav-item">
+
+                        <a asp-area="Customer"
+                           asp-controller="Order"
+                           asp-action="Index"
+                           class="nav-link text-light">
+
+                            <i class="fa-solid fa-box me-1"></i>
+
+                            My Orders
+
+                        </a>
+
+                    </li>
+
                 </ul>
 
-                <!-- ================= USER / STAFF AUTHENTICATION SECTION ================= -->
-                <div class="d-flex align-items-center gap-2">
+
+                <!-- ================= RIGHT SIDE ================= -->
+
+                <div class="d-flex align-items-center gap-3">
+
 
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
-                        <!-- Dynamic User Dropdown -->
+
+                        <!-- CART -->
+
+                        <a asp-area="Customer"
+                           asp-controller="Cart"
+                           asp-action="Index"
+                           class="nav-link text-white cart-link">
+
+                            <i class="fa-solid fa-cart-shopping fs-5"></i>
+
+                            <!-- هنربطه بالـ Cart بعدين -->
+
+                            <span class="badge bg-danger rounded-pill
+                                position-absolute top-0 start-100
+                                translate-middle cart-badge">
+
+                                0
+
+                            </span>
+
+                        </a>
+
+
+                        <!-- USER DROPDOWN -->
+
                         <div class="dropdown">
-                            <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
-                                <i class="fa-solid fa-circle-user text-primary fs-5 me-2"></i>
-                                <span>@User.Identity?.Name</span>
+
+                            <button class="btn btn-outline-light
+                                dropdown-toggle
+                                d-flex align-items-center"
+                                    type="button"
+                                    data-bs-toggle="dropdown">
+
+                                <i class="fa-solid fa-circle-user
+                                text-primary fs-5 me-2"></i>
+
+                                <span>
+                                    @User.Identity?.Name
+                                </span>
+
                             </button>
 
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
 
-                                <!-- STAFF / ADMIN SPECIFIC OPTIONS -->
-                                @if (User.IsInRole(CD.SUPER_ADMIN_ROLE) || User.IsInRole(CD.ADMIN_ROLE))
+                            <ul class="dropdown-menu dropdown-menu-end
+                                shadow border-0 mt-2">
+
+
+                                <!-- ACCOUNT -->
+
+                                <li>
+
+                                    <h6 class="dropdown-header
+                                        text-uppercase
+                                        text-secondary">
+
+                                        My Account
+
+                                    </h6>
+
+                                </li>
+
+
+                                <!-- PROFILE -->
+
+                                <li>
+
+                                    <a asp-area="Identity"
+                                       asp-controller="Profile"
+                                       asp-action="Index"
+                                       class="dropdown-item">
+
+                                        <i class="fa-solid fa-id-card
+                                        me-2 text-secondary"></i>
+
+                                        My Profile
+
+                                    </a>
+
+                                </li>
+
+
+                                <!-- ORDERS -->
+
+                                <li>
+
+                                    <a asp-area="Customer"
+                                       asp-controller="Order"
+                                       asp-action="Index"
+                                       class="dropdown-item">
+
+                                        <i class="fa-solid fa-box
+                                        me-2 text-secondary"></i>
+
+                                        My Orders
+
+                                    </a>
+
+                                </li>
+
+
+                                <li>
+
+                                    <hr class="dropdown-divider">
+
+                                </li>
+
+
+                                <!-- ADMIN -->
+                                @if (User.IsInRole(CD.SUPER_ADMIN_ROLE) ||
+                                                                 User.IsInRole(CD.ADMIN_ROLE))
                                 {
-                                    <li class="dropdown-header text-uppercase fs-7 fw-bold text-primary">
-                                        Management Portal
-                                    </li>
 
                                     <li>
+
+                                        <h6 class="dropdown-header
+                                            text-uppercase
+                                            text-primary">
+
+                                            Management Portal
+
+                                        </h6>
+
+                                    </li>
+
+
+                                    <li>
+
                                         <a asp-area="Admin"
                                            asp-controller="Home"
                                            asp-action="Index"
                                            class="dropdown-item">
 
-                                            <i class="fa-solid fa-chart-pie me-2 text-secondary"></i>
+                                            <i class="fa-solid fa-chart-pie
+                                            me-2 text-secondary"></i>
+
                                             Admin Dashboard
 
                                         </a>
+
                                     </li>
 
+
                                     <li>
+
                                         <a asp-area="Admin"
                                            asp-controller="Product"
                                            asp-action="Index"
                                            class="dropdown-item">
 
-                                            <i class="fa-solid fa-pills me-2 text-secondary"></i>
+                                            <i class="fa-solid fa-pills
+                                            me-2 text-secondary"></i>
+
                                             Manage Products
 
                                         </a>
+
                                     </li>
 
-                                    <li>
-                                        <a asp-area="Admin"
-                                           asp-controller="ProductBatch"
-                                           asp-action="Index"
-                                           class="dropdown-item">
-
-                                            <i class="fa-solid fa-boxes-stacked me-2 text-secondary"></i>
-                                            Manage Product Batches
-
-                                        </a>
-                                    </li>
 
                                     <li>
-                                        <a asp-area="Admin"
-                                           asp-controller="Customer"
-                                           asp-action="Index"
-                                           class="dropdown-item">
 
-                                            <i class="fa-solid fa-users me-2 text-secondary"></i>
-                                            Manage Customers
-
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a asp-area="Admin"
-                                           asp-controller="SalesInvoice"
-                                           asp-action="Index"
-                                           class="dropdown-item">
-
-                                            <i class="fa-solid fa-file-invoice-dollar me-2 text-secondary"></i>
-                                            Sales Invoices
-
-                                        </a>
-                                    </li>
-
-                                    <li>
                                         <a asp-area="Admin"
                                            asp-controller="Order"
                                            asp-action="Index"
                                            class="dropdown-item">
 
-                                            <i class="fa-solid fa-cart-shopping me-2 text-secondary"></i>
+                                            <i class="fa-solid fa-cart-shopping
+                                            me-2 text-secondary"></i>
+
                                             Manage Orders
 
                                         </a>
+
                                     </li>
 
+
                                     <li>
+
                                         <a asp-area="Admin"
                                            asp-controller="User"
                                            asp-action="Index"
                                            class="dropdown-item">
 
-                                            <i class="fa-solid fa-user-gear me-2 text-secondary"></i>
+                                            <i class="fa-solid fa-user-gear
+                                            me-2 text-secondary"></i>
+
                                             Manage Users
 
                                         </a>
+
                                     </li>
+
 
                                     <li>
+
                                         <hr class="dropdown-divider">
+
                                     </li>
+
                                 }
 
-                                <!-- CUSTOMER SPECIFIC OPTIONS -->
-                                <li class="dropdown-header text-uppercase fs-7 fw-bold text-secondary">My Account</li>
-                                <li>
-                                    <a asp-controller="Orders" asp-action="MyOrders" class="dropdown-item">
-                                        <i class="fa-solid fa-box me-2 text-secondary"></i> My Prescription Orders
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-area="Identity" asp-controller="Profile" asp-action="Index" class="dropdown-item">
-                                        <i class="fa-solid fa-id-card me-2 text-secondary"></i> Profile Settings
-                                    </a>
-                                </li>
-
-                                <li><hr class="dropdown-divider"></li>
 
                                 <!-- LOGOUT -->
+
                                 <li>
-                                    <form asp-controller="Account" asp-action="Logout" asp-area="identity" method="get" class="d-inline">
-                                        <button type="submit" class="dropdown-item text-danger">
-                                            <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+
+                                    <form asp-area="Identity"
+                                          asp-controller="Account"
+                                          asp-action="Logout"
+                                          method="post">
+
+                                        <button type="submit"
+                                                class="dropdown-item text-danger">
+
+                                            <i class="fa-solid fa-right-from-bracket
+                                            me-2"></i>
+
+                                            Logout
+
                                         </button>
+
                                     </form>
+
                                 </li>
+
                             </ul>
+
                         </div>
+
                     }
+
                     else
                     {
-                        <!-- GUEST ACTIONS (LOGIN / REGISTER) -->
-                        <a asp-controller="Account" asp-action="Login" asp-area="Identity" class="btn btn-outline-light btn-sm fw-semibold">
-                            <i class="fa-solid fa-right-to-bracket me-1"></i> Sign In
+
+                        <!-- LOGIN -->
+
+                        <a asp-area="Identity"
+                           asp-controller="Account"
+                           asp-action="Login"
+                           class="btn btn-outline-light btn-sm fw-semibold">
+
+                            <i class="fa-solid fa-right-to-bracket me-1"></i>
+
+                            Sign In
+
                         </a>
-                        <a asp-controller="Account" asp-action="Register" asp-area="Identity" class="btn btn-primary btn-sm fw-semibold">
-                            <i class="fa-solid fa-user-plus me-1"></i> Register
+
+
+                        <!-- REGISTER -->
+
+                        <a asp-area="Identity"
+                           asp-controller="Account"
+                           asp-action="Register"
+                           class="btn btn-primary btn-sm fw-semibold">
+
+                            <i class="fa-solid fa-user-plus me-1"></i>
+
+                            Register
+
                         </a>
+
                     }
 
                 </div>
 
             </div>
+
         </div>
+
     </header>
 
-    <!-- ================= SECONDARY SUB-NAVBAR (Only Shown for Staff/Admin) ================= -->
-    @if ((User.Identity?.IsAuthenticated ?? false) && (User.IsInRole("Admin") || User.IsInRole("Pharmacist")))
-    {
-        <nav class="bg-primary text-white py-2 shadow-sm">
-            <div class="container-fluid px-4 d-flex align-items-center justify-content-between overflow-x-auto">
-                <span class="badge bg-light text-primary fw-bold me-3">Staff Control Panel</span>
 
-                <div class="d-flex gap-3 text-nowrap">
-                    <a asp-controller="Categories" asp-action="Index" class="text-white text-decoration-none small fw-semibold">
-                        <i class="fa-solid fa-layer-group me-1"></i> Categories
-                    </a>
-                    <a asp-controller="Products" asp-action="Index" class="text-white text-decoration-none small fw-semibold">
-                        <i class="fa-solid fa-pills me-1"></i> Products
-                    </a>
-                    <a asp-controller="ProductBatches" asp-action="Index" class="text-white text-decoration-none small fw-semibold">
-                        <i class="fa-solid fa-boxes-stacked me-1"></i> Batches & Expiry
-                    </a>
-                    <a asp-controller="Customers" asp-action="Index" class="text-white text-decoration-none small fw-semibold">
-                        <i class="fa-solid fa-users me-1"></i> Customers
-                    </a>
-                    <a asp-controller="SalesInvoices" asp-action="Index" class="text-white text-decoration-none small fw-semibold">
-                        <i class="fa-solid fa-file-invoice-dollar me-1"></i> Invoices
-                    </a>
-                </div>
+    <!-- ================= MAIN CONTENT ================= -->
 
-                <a asp-controller="SalesInvoices" asp-action="Create" class="btn btn-sm btn-success fw-bold ms-3">
-                    <i class="fa-solid fa-cart-shopping me-1"></i> POS
-                </a>
-            </div>
-        </nav>
-    }
+    <main class="flex-grow-1 py-4">
 
-    <!-- ================= MAIN BODY CONTENT ================= -->
-    <main class="flex-grow-1 p-4 container-fluid">
-        @RenderBody()
+        <div class="container-fluid px-3 px-lg-4">
+
+            @RenderBody()
+
+        </div>
+
     </main>
 
+
     <!-- ================= FOOTER ================= -->
-    <footer class="bg-white border-top mt-auto py-3 text-secondary small">
-        <div class="container-fluid px-4 d-flex flex-column flex-sm-row justify-content-between align-items-center">
-            <span>&copy; @DateTime.Now.Year - <strong>PharmaCare Management & Store</strong>. All rights reserved.</span>
-            <div class="d-flex gap-3 mt-2 mt-sm-0">
-                <a href="#" class="text-secondary text-decoration-none">Privacy Policy</a>
-                <a href="#" class="text-secondary text-decoration-none">Terms of Service</a>
-                <a href="#" class="text-secondary text-decoration-none">Support</a>
+
+    <footer class="border-top mt-auto py-3 text-secondary small">
+
+        <div class="container-fluid px-3 px-lg-4">
+
+            <div class="d-flex flex-column
+                flex-sm-row
+                justify-content-between
+                align-items-center">
+
+
+                <span>
+
+                    &copy; @DateTime.Now.Year -
+
+                    <strong>
+                        PharmaCare Management & Store
+                    </strong>
+
+                    . All rights reserved.
+
+                </span>
+
+
+                <div class="d-flex gap-3 mt-2 mt-sm-0">
+
+                    <a href="#"
+                       class="text-secondary text-decoration-none">
+
+                        Privacy Policy
+
+                    </a>
+
+                    <a href="#"
+                       class="text-secondary text-decoration-none">
+
+                        Terms of Service
+
+                    </a>
+
+                    <a href="#"
+                       class="text-secondary text-decoration-none">
+
+                        Support
+
+                    </a>
+
+                </div>
+
             </div>
+
         </div>
+
     </footer>
 
-    <!-- Scripts -->
+
+    <!-- ================= SCRIPTS ================= -->
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
+
 </html>

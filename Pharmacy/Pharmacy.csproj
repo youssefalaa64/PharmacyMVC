@@ -9,18 +9,26 @@
   <ItemGroup>
     <Compile Remove="Areas\Admin\Data\**" />
     <Compile Remove="Areas\Admin\Models\**" />
+    <Compile Remove="Areas\Customer\Data\**" />
+    <Compile Remove="Areas\Customer\Models\**" />
     <Compile Remove="Areas\Identity\Data\**" />
     <Compile Remove="Areas\Identity\Models\**" />
     <Content Remove="Areas\Admin\Data\**" />
     <Content Remove="Areas\Admin\Models\**" />
+    <Content Remove="Areas\Customer\Data\**" />
+    <Content Remove="Areas\Customer\Models\**" />
     <Content Remove="Areas\Identity\Data\**" />
     <Content Remove="Areas\Identity\Models\**" />
     <EmbeddedResource Remove="Areas\Admin\Data\**" />
     <EmbeddedResource Remove="Areas\Admin\Models\**" />
+    <EmbeddedResource Remove="Areas\Customer\Data\**" />
+    <EmbeddedResource Remove="Areas\Customer\Models\**" />
     <EmbeddedResource Remove="Areas\Identity\Data\**" />
     <EmbeddedResource Remove="Areas\Identity\Models\**" />
     <None Remove="Areas\Admin\Data\**" />
     <None Remove="Areas\Admin\Models\**" />
+    <None Remove="Areas\Customer\Data\**" />
+    <None Remove="Areas\Customer\Models\**" />
     <None Remove="Areas\Identity\Data\**" />
     <None Remove="Areas\Identity\Models\**" />
   </ItemGroup>
@@ -40,10 +48,6 @@
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
 		<PackageReference Include="NuGet.Packaging" Version="7.6.0" />
 		<PackageReference Include="NuGet.Protocol" Version="7.6.0" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Areas\Customer\Data\" />
-	  <Folder Include="Areas\Customer\Models\" />
 	</ItemGroup>
 
 </Project>
