@@ -107,7 +107,7 @@ namespace Pharmacy.Areas.Identity.Controllers
                 }
                 return View(loginVM);
             }
-            return RedirectToAction("Index", "Home", new { area = CD.CUSTOMER_AREA });
+            return RedirectToAction("Index", "product", new { area = CD.CUSTOMER_AREA });
         }
         [HttpGet]
         public async Task<IActionResult> Logout()

@@ -1,0 +1,407 @@
+﻿@model Pharmacy.ViewModels.CartVM
+
+@{
+    ViewData["Title"] = "Shopping Cart";
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row
+        justify-content-between align-items-md-center
+        gap-3 mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="fa-solid fa-cart-shopping text-primary me-2"></i>
+                Shopping Cart
+            </h2>
+
+            <p class="text-muted mb-0">
+                Review the medicines you want to order.
+            </p>
+        </div>
+
+        @if (Model.Items.Any())
+        {
+            <a asp-area="Customer"
+               asp-controller="Product"
+               asp-action="Index"
+               class="btn btn-outline-primary">
+
+                <i class="fa-solid fa-pills me-2"></i>
+                Continue Shopping
+
+            </a>
+        }
+
+    </div>
+
+
+    @if (Model.Items.Any())
+    {
+        <div class="row g-4">
+
+            <!-- ================= CART ITEMS ================= -->
+
+            <div class="col-lg-8">
+
+                <div class="card border-0 shadow-sm rounded-4">
+
+                    <div class="card-header bg-white border-0 p-4">
+
+                        <div class="d-flex
+                            justify-content-between
+                            align-items-center">
+
+                            <h5 class="fw-bold mb-0">
+                                Cart Items
+                            </h5>
+
+                            <span class="badge bg-primary-subtle
+                                text-primary">
+
+                                @Model.Items.Count item(s)
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-body p-0">
+
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="p-4 border-top">
+
+                                <div class="row g-3
+                                    align-items-center">
+
+                                    <!-- Product Icon -->
+
+                                    <div class="col-auto">
+
+                                        <div class="bg-light rounded-3
+                                            d-flex
+                                            align-items-center
+                                            justify-content-center"
+                                             style="width:75px;height:75px;">
+
+                                            <i class="fa-solid fa-pills
+                                                text-primary fs-3">
+                                            </i>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- Product Info -->
+
+                                    <div class="col">
+
+                                        <h6 class="fw-bold mb-1">
+
+                                            @item.ProductName
+
+                                        </h6>
+
+                                        @if (!string.IsNullOrWhiteSpace(item.GenericName))
+                                        {
+                                            <div class="text-muted small">
+
+                                                @item.GenericName
+
+                                            </div>
+                                        }
+
+                                        <div class="text-success
+                                            fw-semibold mt-1">
+
+                                            @item.UnitPrice.ToString("0.00")
+                                            EGP / item
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- Quantity -->
+
+                                    <div class="col-12 col-md-auto">
+
+                                        <form asp-area="Customer"
+                                              asp-controller="Cart"
+                                              asp-action="Update"
+                                              method="post"
+                                              class="d-flex
+                                            align-items-center
+                                            gap-2">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="cartItemId"
+                                                   value="@item.CartItemId" />
+
+                                            <label class="text-muted small
+                                                d-none d-md-block">
+
+                                                Qty
+
+                                            </label>
+
+                                            <input type="number"
+                                                   name="quantity"
+                                                   value="@item.Quantity"
+                                                   min="1"
+                                                   class="form-control"
+                                                   style="width:80px;" />
+
+                                            <button type="submit"
+                                                    class="btn btn-outline-primary"
+                                                    title="Update quantity">
+
+                                                <i class="fa-solid fa-rotate"></i>
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+
+                                    <!-- Total -->
+
+                                    <div class="col-auto text-end">
+
+                                        <div class="fw-bold fs-6">
+
+                                            @item.TotalPrice.ToString("0.00")
+                                            EGP
+
+                                        </div>
+
+
+                                        <!-- Remove -->
+
+                                        <form asp-area="Customer"
+                                              asp-controller="Cart"
+                                              asp-action="Remove"
+                                              method="post"
+                                              class="mt-2">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="cartItemId"
+                                                   value="@item.CartItemId" />
+
+                                            <button type="submit"
+                                                    class="btn btn-sm
+                                                btn-outline-danger">
+
+                                                <i class="fa-solid
+                                                fa-trash me-1"></i>
+
+                                                Remove
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+
+
+                    <!-- Clear Cart -->
+
+                    <div class="card-footer bg-white
+                        border-0 p-4">
+
+                        <form asp-area="Customer"
+                              asp-controller="Cart"
+                              asp-action="Clear"
+                              method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit"
+                                    class="btn btn-outline-danger">
+
+                                <i class="fa-solid fa-trash-can me-2"></i>
+
+                                Clear Cart
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= ORDER SUMMARY ================= -->
+
+            <div class="col-lg-4">
+
+                <div class="card border-0 shadow-sm
+                    rounded-4 sticky-lg-top"
+                     style="top:90px;">
+
+                    <div class="card-body p-4">
+
+                        <h5 class="fw-bold mb-4">
+                            Order Summary
+                        </h5>
+
+
+                        <!-- Subtotal -->
+
+                        <div class="d-flex
+                            justify-content-between
+                            mb-3">
+
+                            <span class="text-muted">
+                                Subtotal
+                            </span>
+
+                            <span class="fw-semibold">
+
+                                @Model.TotalAmount.ToString("0.00")
+                                EGP
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- Delivery -->
+
+                        <div class="d-flex
+                            justify-content-between
+                            mb-3">
+
+                            <span class="text-muted">
+                                Delivery
+                            </span>
+
+                            <span class="text-muted">
+                                Calculated at checkout
+                            </span>
+
+                        </div>
+
+
+                        <hr />
+
+
+                        <!-- Total -->
+
+                        <div class="d-flex
+                            justify-content-between
+                            align-items-center
+                            mb-4">
+
+                            <span class="fw-bold fs-5">
+                                Total
+                            </span>
+
+                            <span class="text-success
+                                fw-bold fs-4">
+
+                                @Model.TotalAmount.ToString("0.00")
+                                EGP
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- Checkout -->
+
+                        <a asp-area="Customer"
+                           asp-controller="Order"
+                           asp-action="Checkout"
+                           class="btn btn-primary
+                            btn-lg w-100">
+
+                            <i class="fa-solid fa-credit-card me-2"></i>
+
+                            Proceed to Checkout
+
+                        </a>
+
+
+                        <div class="text-center
+                            text-muted small mt-3">
+
+                            <i class="fa-solid fa-shield-halved me-1"></i>
+
+                            Secure checkout
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <!-- ================= EMPTY CART ================= -->
+
+        <div class="card border-0 shadow-sm rounded-4">
+
+            <div class="card-body text-center py-5">
+
+                <div class="mb-4">
+
+                    <i class="fa-solid fa-cart-shopping
+                        text-muted"
+                       style="font-size:75px;">
+                    </i>
+
+                </div>
+
+                <h3 class="fw-bold mb-2">
+                    Your Cart is Empty
+                </h3>
+
+                <p class="text-muted mb-4">
+
+                    You haven't added any medicines to your cart yet.
+
+                </p>
+
+                <a asp-area="Customer"
+                   asp-controller="Product"
+                   asp-action="Index"
+                   class="btn btn-primary px-4">
+
+                    <i class="fa-solid fa-pills me-2"></i>
+
+                    Browse Medicines
+
+                </a>
+
+            </div>
+
+        </div>
+    }
+
+</div>

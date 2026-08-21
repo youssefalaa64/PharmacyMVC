@@ -1,0 +1,219 @@
+﻿@model Pharmacy.Models.Order
+
+@{
+    ViewData["Title"] = "Order Placed";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7">
+
+            <div class="card border-0 shadow-sm rounded-4">
+
+                <div class="card-body text-center p-5">
+
+                    <!-- Success Icon -->
+
+                    <div class="mb-4">
+
+                        <div class="bg-success-subtle
+                            rounded-circle
+                            d-inline-flex
+                            align-items-center
+                            justify-content-center"
+                             style="width:90px;height:90px;">
+
+                            <i class="fa-solid fa-check
+                                text-success fs-1">
+                            </i>
+
+                        </div>
+
+                    </div>
+
+
+                    <h2 class="fw-bold mb-2">
+
+                        Order Placed Successfully!
+
+                    </h2>
+
+
+                    <p class="text-muted mb-4">
+
+                        Thank you for your order.
+                        We have received your request successfully.
+
+                    </p>
+
+
+                    <!-- Order Number -->
+
+                    <div class="bg-light rounded-4 p-4 mb-4">
+
+                        <div class="text-muted small mb-1">
+
+                            Order Number
+
+                        </div>
+
+                        <div class="fw-bold fs-4 text-primary">
+
+                            @Model.OrderNumber
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Order Details -->
+
+                    <div class="row g-3 text-start mb-4">
+
+                        <div class="col-md-6">
+
+                            <div class="border rounded-3 p-3">
+
+                                <div class="text-muted small">
+                                    Order Date
+                                </div>
+
+                                <div class="fw-semibold">
+
+                                    @Model.OrderDate.ToString("dd MMM yyyy, hh:mm tt")
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <div class="border rounded-3 p-3">
+
+                                <div class="text-muted small">
+                                    Status
+                                </div>
+
+                                <div>
+
+                                    <span class="badge bg-warning-subtle
+                                        text-warning">
+
+                                        @Model.Status
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <div class="border rounded-3 p-3">
+
+                                <div class="text-muted small">
+                                    Payment Method
+                                </div>
+
+                                <div class="fw-semibold">
+
+                                    @Model.PaymentMethod
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <div class="border rounded-3 p-3">
+
+                                <div class="text-muted small">
+                                    Total Amount
+                                </div>
+
+                                <div class="fw-bold text-success">
+
+                                    @Model.NetAmount.ToString("0.00")
+                                    EGP
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Address -->
+
+                    <div class="text-start
+                        bg-light rounded-3 p-3 mb-4">
+
+                        <div class="text-muted small mb-1">
+
+                            Delivery Address
+
+                        </div>
+
+                        <div class="fw-semibold">
+
+                            @Model.DeliveryAddress
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Actions -->
+
+                    <div class="d-flex
+                        flex-column flex-sm-row
+                        justify-content-center
+                        gap-2">
+
+                        <a asp-area="Customer"
+                           asp-controller="Order"
+                           asp-action="Index"
+                           class="btn btn-primary px-4">
+
+                            <i class="fa-solid fa-box me-2"></i>
+
+                            My Orders
+
+                        </a>
+
+
+                        <a asp-area="Customer"
+                           asp-controller="Product"
+                           asp-action="Index"
+                           class="btn btn-outline-primary px-4">
+
+                            <i class="fa-solid fa-pills me-2"></i>
+
+                            Continue Shopping
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

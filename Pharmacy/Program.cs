@@ -36,6 +36,11 @@ namespace Pharmacy
             })
            .AddEntityFrameworkStores<ApplicationDbContext>()
            .AddDefaultTokenProviders();
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            });
 
             builder.Services.AddTransient<IEmailSender, EmailSender>();
             builder.Services.AddTransient<IDbInitializer, DbInitializer>();
@@ -47,12 +52,8 @@ namespace Pharmacy
             builder.Services.AddScoped<IRepository<SalesInvoiceItem>, Repository<SalesInvoiceItem>>();
             builder.Services.AddScoped<IRepository<Order>, Repository<Order>>();
             builder.Services.AddScoped<IRepository<OrderItem>, Repository<OrderItem>>();
-            //builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
-
-
-            builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
-            
-            builder.Services.AddScoped(typeof(Repository<>), typeof(Repository<>));
+            builder.Services.AddScoped<IRepository<Cart>, Repository<Cart>>();
+            builder.Services.AddScoped<IRepository<CartItem>, Repository<CartItem>>();
 
             var app = builder.Build();
 

@@ -1,424 +1,241 @@
-﻿@model Pharmacy.ViewModels.ProductFilterVM
+﻿@model Pharmacy.Models.Product
 
 @{
-    ViewData["Title"] = "Products";
+    ViewData["Title"] = "Product Details";
 }
 
 <div class="container-fluid py-4">
 
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Back -->
+    <div class="mb-4">
 
-        <div>
-            <h2 class="fw-bold mb-1">
-                <i class="bi bi-capsule-pill me-2"></i>
-                Products
-            </h2>
-
-            <p class="text-muted mb-0">
-                Manage pharmacy products and inventory.
-            </p>
-        </div>
-
-        <a asp-area="Admin"
+        <a asp-area="Customer"
            asp-controller="Product"
-           asp-action="Create"
-           class="btn btn-primary px-4">
+           asp-action="Index"
+           class="text-decoration-none">
 
-            <i class="bi bi-plus-lg me-2"></i>
-            Add Product
+            <i class="fa-solid fa-arrow-left me-1"></i>
+
+            Back to Medicines
 
         </a>
 
     </div>
 
 
-    <!-- Filters -->
-    <div class="card border-0 shadow-sm mb-4">
+    <!-- Product Details Card -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
 
-        <div class="card-header bg-white border-0 py-3">
+        <div class="card-body p-4 p-lg-5">
 
-            <h5 class="mb-0 fw-bold">
-                <i class="bi bi-funnel me-2"></i>
-                Search & Filter
-            </h5>
+            <div class="row g-5 align-items-center">
 
-        </div>
 
-        <div class="card-body">
+                <!-- Product Visual -->
+                <div class="col-lg-5">
 
-            <form asp-action="Index"
-                  asp-controller="Product"
-                  method="get">
+                    <div class="bg-light rounded-4
+                        d-flex align-items-center
+                        justify-content-center"
+                         style="height: 350px;">
 
-                <div class="row g-3">
-
-                    <!-- Name -->
-                    <div class="col-md-3">
-
-                        <label class="form-label fw-semibold">
-                            Product Name
-                        </label>
-
-                        <input type="text"
-                               name="Name"
-                               value="@Model.Name"
-                               class="form-control"
-                               placeholder="Search by name..." />
+                        <i class="fa-solid fa-pills text-primary"
+                           style="font-size: 120px;">
+                        </i>
 
                     </div>
 
+                </div>
 
-                    <!-- ID -->
-                    <div class="col-md-2">
 
-                        <label class="form-label fw-semibold">
-                            Product ID
-                        </label>
-
-                        <input type="number"
-                               name="Id"
-                               value="@Model.Id"
-                               class="form-control"
-                               placeholder="ID" />
-
-                    </div>
+                <!-- Product Information -->
+                <div class="col-lg-7">
 
 
                     <!-- Category -->
-                    <div class="col-md-3">
+                    @if (Model.Category != null)
+                    {
+                        <span class="badge bg-primary-subtle
+                            text-primary mb-3">
 
-                        <label class="form-label fw-semibold">
-                            Category
-                        </label>
+                            <i class="fa-solid fa-layer-group me-1"></i>
 
-                        <input type="text"
-                               name="Category"
-                               value="@Model.Category"
-                               class="form-control"
-                               placeholder="Category..." />
+                            @Model.Category.Name
+
+                        </span>
+                    }
+
+
+                    <!-- Name -->
+                    <h1 class="fw-bold mb-2">
+
+                        @Model.Name
+
+                    </h1>
+
+
+                    <!-- Generic Name -->
+                    @if (!string.IsNullOrWhiteSpace(Model.GenericName))
+                    {
+                        <p class="text-muted fs-5 mb-4">
+
+                            @Model.GenericName
+
+                        </p>
+                    }
+
+
+                    <!-- Price -->
+                    <div class="mb-4">
+
+                        <span class="text-muted d-block small">
+                            Price
+                        </span>
+
+                        <span class="text-success fw-bold"
+                              style="font-size: 32px;">
+
+                            @Model.Price.ToString("0.00") EGP
+
+                        </span>
 
                     </div>
 
 
-                    <!-- Min Price -->
-                    <div class="col-md-2">
+                    <hr />
 
-                        <label class="form-label fw-semibold">
-                            Min Price
-                        </label>
 
-                        <input type="number"
-                               step="0.01"
-                               name="Minprice"
-                               value="@Model.Minprice"
-                               class="form-control"
-                               placeholder="Min price" />
+                    <!-- Product Information -->
+                    <div class="row g-3 my-3">
+
+                        <!-- Minimum Stock -->
+                        <div class="col-sm-6">
+
+                            <div class="bg-light rounded-3 p-3">
+
+                                <div class="text-muted small mb-1">
+
+                                    <i class="fa-solid fa-boxes-stacked me-1"></i>
+
+                                    Minimum Stock Level
+
+                                </div>
+
+                                <div class="fw-bold">
+
+                                    @Model.MinStockLevel
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Prescription -->
+                        <div class="col-sm-6">
+
+                            <div class="bg-light rounded-3 p-3">
+
+                                <div class="text-muted small mb-1">
+
+                                    <i class="fa-solid
+                                    fa-prescription-bottle-medical
+                                    me-1"></i>
+
+                                    Prescription
+
+                                </div>
+
+                                <div class="fw-bold">
+
+                                    @if (Model.RequiresPrescription)
+                                    {
+                                        <span class="text-warning">
+                                            Required
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-success">
+                                            Not Required
+                                        </span>
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
 
-                    <!-- Max Price -->
-                    <div class="col-md-2">
+                    <!-- Prescription Warning -->
+                    @if (Model.RequiresPrescription)
+                    {
+                        <div class="alert alert-warning
+                            d-flex align-items-start">
 
-                        <label class="form-label fw-semibold">
-                            Max Price
-                        </label>
+                            <i class="fa-solid
+                            fa-triangle-exclamation
+                            me-2 mt-1"></i>
 
-                        <input type="number"
-                               step="0.01"
-                               name="Maxprice"
-                               value="@Model.Maxprice"
-                               class="form-control"
-                               placeholder="Max price" />
+                            <div>
 
-                    </div>
+                                <strong>
+                                    Prescription Required
+                                </strong>
 
-                </div>
+                                <div class="small mt-1">
 
+                                    This medicine requires a valid
+                                    prescription before it can be ordered.
 
-                <div class="d-flex justify-content-end gap-2 mt-3">
+                                </div>
 
-                    <a asp-action="Index"
-                       class="btn btn-light border">
+                            </div>
 
-                        <i class="bi bi-arrow-counterclockwise me-1"></i>
-                        Reset
+                        </div>
+                    }
 
-                    </a>
 
-                    <button type="submit"
-                            class="btn btn-primary px-4">
+                    <!-- Actions -->
+                    <div class="d-flex flex-column
+                        flex-sm-row gap-2 mt-4">
 
-                        <i class="bi bi-search me-1"></i>
-                        Search
+                        <a asp-area="Customer"
+                           asp-controller="Cart"
+                           asp-action="Add"
+                           asp-route-productId="@Model.Id"
+                           class="btn btn-primary btn-lg px-4">
 
-                    </button>
+                            <i class="fa-solid fa-cart-plus me-2"></i>
 
-                </div>
-
-            </form>
-
-        </div>
-
-    </div>
-
-
-    <!-- Products -->
-    <div class="card border-0 shadow-sm">
-
-        <div class="card-header bg-white border-0 py-3">
-
-            <div class="d-flex justify-content-between align-items-center">
-
-                <h5 class="mb-0 fw-bold">
-                    Product List
-                </h5>
-
-                <span class="badge bg-primary-subtle text-primary px-3 py-2">
-                    Page @Model.Page of @Model.TotalPages
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <div class="card-body p-0">
-
-            <div class="table-responsive">
-
-                <table class="table table-hover align-middle mb-0">
-
-                    <thead class="table-light">
-
-                        <tr>
-
-                            <th class="ps-4">ID</th>
-                            <th>Product Name</th>
-                            <th>Generic Name</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Min Stock</th>
-                            <th>Prescription</th>
-                            <th class="text-end pe-4">Actions</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        @if (Model.products != null && Model.products.Any())
-                        {
-                            foreach (var product in Model.products)
-                            {
-                                <tr>
-
-                                    <td class="ps-4 fw-semibold">
-                                        #@product.Id
-                                    </td>
-
-
-                                    <td>
-
-                                        <span class="fw-semibold">
-                                            @product.Name
-                                        </span>
-
-                                    </td>
-
-
-                                    <td>
-                                        @product.GenericName
-                                    </td>
-
-
-                                    <td>
-
-                                        <span class="badge bg-light text-dark border">
-                                            @(product.Category?.Name ?? "No Category")
-                                        </span>
-
-                                    </td>
-
-
-                                    <td>
-
-                                        <span class="fw-semibold">
-                                            @product.Price.ToString("C")
-                                        </span>
-
-                                    </td>
-
-
-                                    <td>
-                                        @product.MinStockLevel
-                                    </td>
-
-
-                                    <td>
-
-                                        @if (product.RequiresPrescription)
-                                        {
-                                            <span class="badge bg-warning-subtle text-warning-emphasis">
-
-                                                <i class="bi bi-prescription2 me-1"></i>
-                                                Required
-
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-success-subtle text-success">
-
-                                                <i class="bi bi-check-circle me-1"></i>
-                                                Not Required
-
-                                            </span>
-                                        }
-
-                                    </td>
-
-
-                                    <td class="text-end pe-4">
-
-                                        <div class="btn-group">
-
-                                            <a asp-action="Edit"
-                                               asp-route-id="@product.Id"
-                                               class="btn btn-sm btn-outline-primary"
-                                               title="Edit">
-
-                                                <i class="bi bi-pencil"></i>
-
-                                            </a>
-
-
-                                            <a asp-action="Delete"
-                                               asp-route-id="@product.Id"
-                                               class="btn btn-sm btn-outline-danger"
-                                               title="Delete">
-
-                                                <i class="bi bi-trash"></i>
-
-                                            </a>
-
-                                        </div>
-
-                                    </td>
-
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-
-                                <td colspan="8"
-                                    class="text-center py-5">
-
-                                    <i class="bi bi-box-seam fs-1 text-muted"></i>
-
-                                    <h5 class="mt-3">
-                                        No Products Found
-                                    </h5>
-
-                                    <p class="text-muted">
-                                        Try changing your search filters.
-                                    </p>
-
-                                    <a asp-action="Create"
-                                       class="btn btn-primary">
-
-                                        <i class="bi bi-plus-lg me-1"></i>
-                                        Add Product
-
-                                    </a>
-
-                                </td>
-
-                            </tr>
-                        }
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- Pagination -->
-    @if (Model.TotalPages > 1)
-    {
-        <nav class="mt-4">
-
-            <ul class="pagination justify-content-center">
-
-                <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
-
-                    <a class="page-link"
-                       asp-action="Index"
-                       asp-route-page="@(Model.Page - 1)"
-                       asp-route-Name="@Model.Name"
-                       asp-route-Id="@Model.Id"
-                       asp-route-Category="@Model.Category"
-                       asp-route-Minprice="@Model.Minprice"
-                       asp-route-Maxprice="@Model.Maxprice">
-
-                        <i class="bi bi-chevron-left"></i>
-
-                    </a>
-
-                </li>
-
-
-                @for (int i = 1; i <= Model.TotalPages; i++)
-                {
-                    <li class="page-item @(i == Model.Page ? "active" : "")">
-
-                        <a class="page-link"
-                           asp-action="Index"
-                           asp-route-page="@i"
-                           asp-route-Name="@Model.Name"
-                           asp-route-Id="@Model.Id"
-                           asp-route-Category="@Model.Category"
-                           asp-route-Minprice="@Model.Minprice"
-                           asp-route-Maxprice="@Model.Maxprice">
-
-                            @i
+                            Add to Cart
 
                         </a>
 
-                    </li>
-                }
 
+                        <a asp-area="Customer"
+                           asp-controller="Product"
+                           asp-action="Index"
+                           class="btn btn-outline-secondary btn-lg px-4">
 
-                <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : "")">
+                            <i class="fa-solid fa-arrow-left me-2"></i>
 
-                    <a class="page-link"
-                       asp-action="Index"
-                       asp-route-page="@(Model.Page + 1)"
-                       asp-route-Name="@Model.Name"
-                       asp-route-Id="@Model.Id"
-                       asp-route-Category="@Model.Category"
-                       asp-route-Minprice="@Model.Minprice"
-                       asp-route-Maxprice="@Model.Maxprice">
+                            Continue Shopping
 
-                        <i class="bi bi-chevron-right"></i>
+                        </a>
 
-                    </a>
+                    </div>
 
-                </li>
+                </div>
 
-            </ul>
+            </div>
 
-        </nav>
-    }
+        </div>
+
+    </div>
 
 </div>

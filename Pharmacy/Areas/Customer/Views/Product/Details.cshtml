@@ -210,17 +210,35 @@
                     flex-sm-row gap-2 mt-4">
 
 
-                    <a asp-area="Customer"
-                       asp-controller="Cart"
-                       asp-action="Add"
-                       asp-route-productId="@Model.Id"
-                       class="btn btn-primary btn-lg px-4">
+                    <form asp-area="Customer"
+                          asp-controller="Cart"
+                          asp-action="Add"
+                          method="post"
+                          class="d-flex align-items-center gap-2">
 
-                        <i class="fa-solid fa-cart-plus me-2"></i>
+                        @Html.AntiForgeryToken()
 
-                        Add to Cart
+                        <input type="hidden"
+                               name="productId"
+                               value="@Model.Id" />
 
-                    </a>
+                        <input type="number"
+                               name="quantity"
+                               value="1"
+                               min="1"
+                               class="form-control"
+                               style="width:80px;" />
+
+                        <button type="submit"
+                                class="btn btn-primary btn-lg px-4">
+
+                            <i class="fa-solid fa-cart-plus me-2"></i>
+
+                            Add to Cart
+
+                        </button>
+
+                    </form>
 
 
                     <a asp-area="Customer"
