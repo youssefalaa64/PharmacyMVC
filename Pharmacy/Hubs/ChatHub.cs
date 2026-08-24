@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Pharmacy.Services;
 using Pharmacy.Utils;
@@ -9,10 +10,14 @@ namespace Pharmacy.Hubs
     public class ChatHub : Hub
     {
         private readonly IChatService _chatService;
+        private readonly INotificationService _notificationService;
+        UserManager<ApplicationUser> _userManager;
 
-        public ChatHub(IChatService chatService)
+        public ChatHub(IChatService chatService, INotificationService notificationService, UserManager<ApplicationUser> userManager)
         {
             _chatService = chatService;
+            _notificationService = notificationService;
+            this._userManager = userManager;
         }
 
         public async Task JoinChat(int chatId)
@@ -70,8 +75,8 @@ namespace Pharmacy.Hubs
         }
 
         public async Task SendMessage(
-            int chatId,
-            string message)
+      int chatId,
+      string message)
         {
             var userId = Context.UserIdentifier;
 
@@ -101,6 +106,20 @@ namespace Pharmacy.Hubs
                 );
             }
 
+            // Get the chat
+            var chat = await _chatService.GetChatAsync(
+                chatId,
+                userId
+            );
+
+            if (chat == null)
+            {
+                throw new HubException(
+                    "Chat not found."
+                );
+            }
+
+            // Send message to everyone inside the chat
             await Clients
                 .Group(GetChatGroup(chatId))
                 .SendAsync(
@@ -115,7 +134,60 @@ namespace Pharmacy.Hubs
                         isRead = chatMessage.IsRead
                     }
                 );
+
+
+            // ==========================================
+            // Send Notification
+            // ==========================================
+
+            if (chat.CustomerId == userId)
+            {
+                // Customer sent message
+
+                if (!string.IsNullOrEmpty(chat.AdminId))
+                {
+                    // Chat already assigned
+                    await _notificationService.CreateAsync(
+                        chat.AdminId,
+                        "You have a new chat message.",
+                        "Chat",
+                        chatId
+                    );
+                }
+                else
+                {
+                    // Chat is not assigned
+                    // Notify all Super Admins
+
+                    var admins =
+                        await _userManager.GetUsersInRoleAsync(
+                            CD.SUPER_ADMIN_ROLE
+                        );
+
+                    foreach (var admin in admins)
+                    {
+                        await _notificationService.CreateAsync(
+                            admin.Id,
+                            "A customer sent a new chat message.",
+                            "Chat",
+                            chatId
+                        );
+                    }
+                }
+            }
+            else if (chat.AdminId == userId)
+            {
+                // Admin sent message
+
+                await _notificationService.CreateAsync(
+                    chat.CustomerId,
+                    "You have a new message from support.",
+                    "Chat",
+                    chatId
+                );
+            }
         }
+        
 
         public async Task MarkAsRead(int chatId)
         {

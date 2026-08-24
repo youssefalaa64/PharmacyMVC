@@ -79,13 +79,12 @@
             );
 
             return chats
-                .OrderByDescending(c =>
-                    c.Messages
-                        .OrderByDescending(m => m.SentAt)
-                        .Select(m => m.SentAt)
-                        .FirstOrDefault()
-                )
-                .ToList();
+       .OrderByDescending(c =>
+           c.Messages
+               .Select(m => (DateTime?)m.SentAt)
+               .Max() ?? c.CreatedAt
+       )
+       .ToList();
         }
         public async Task<Chat?> GetAdminChatAsync(
     int chatId,
