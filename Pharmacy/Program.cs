@@ -58,7 +58,9 @@ namespace Pharmacy
             builder.Services.AddScoped<IRepository<CartItem>, Repository<CartItem>>();
             builder.Services.AddScoped<IRepository<Notification>, Repository<Notification>>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
-            
+            builder.Services.AddScoped<IRepository<Chat>, Repository<Chat>>();
+            builder.Services.AddScoped<IRepository<ChatMessage>, Repository<ChatMessage>>();
+            builder.Services.AddScoped<IChatService, ChatService>();
 
             var app = builder.Build();
 
@@ -76,6 +78,7 @@ namespace Pharmacy
                 app.UseHsts();
             }
             app.MapHub<NotificationHub>("/notificationHub");
+            app.MapHub<ChatHub>("/chatHub");
             app.UseHttpsRedirection();
             app.UseRouting();
 

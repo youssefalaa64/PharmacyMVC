@@ -10,6 +10,14 @@ namespace Pharmacy.DataAccess
             : base(options)
         {
         }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.ApplyConfigurationsFromAssembly(
+                typeof(ApplicationDbContext).Assembly
+            );
+        }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductBatch> ProductBatches { get; set; }
@@ -22,6 +30,8 @@ namespace Pharmacy.DataAccess
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Chat> Chats { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
     }
 }
