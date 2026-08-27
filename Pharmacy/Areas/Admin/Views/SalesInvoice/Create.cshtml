@@ -6,173 +6,133 @@
 
 <div class="container-fluid py-4">
 
-    <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-
         <div>
-            <h2 class="fw-bold mb-1">
-                <i class="bi bi-receipt-cutoff text-primary me-2"></i>
-                Create Sales Invoice
-            </h2>
-
+            <h2 class="fw-bold">Create Sales Invoice</h2>
             <p class="text-muted mb-0">
-                Create a new offline sale or invoice for an online order.
+                Create a new offline customer sales invoice
             </p>
         </div>
 
         <a asp-action="Index" class="btn btn-light border">
             <i class="bi bi-arrow-left me-1"></i>
-            Back to Invoices
+            Back
         </a>
-
     </div>
 
-
-    <!-- Validation -->
     <form asp-action="Create" method="post">
 
-        <div asp-validation-summary="ModelOnly"
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="All"
              class="alert alert-danger"
              role="alert">
         </div>
 
+        <div class="row g-4">
 
-        <!-- ============================= -->
-        <!-- Invoice Information -->
-        <!-- ============================= -->
+            <!-- ================= INVOICE INFO ================= -->
 
-        <div class="card border-0 shadow-sm mb-4">
+            <div class="col-lg-4">
 
-            <div class="card-header bg-white border-0 py-3">
+                <div class="card border-0 shadow-sm">
 
-                <h5 class="fw-bold mb-0">
-                    <i class="bi bi-info-circle text-primary me-2"></i>
-                    Invoice Information
-                </h5>
+                    <div class="card-body">
 
-            </div>
+                        <h5 class="fw-bold mb-4">
+                            Invoice Information
+                        </h5>
 
-            <div class="card-body p-4">
+                        <div class="mb-3">
 
-                <div class="row g-4">
+                            <label asp-for="InvoiceNumber"
+                                   class="form-label">
+                                Invoice #
+                            </label>
 
-                    <!-- Invoice Number -->
-                    <div class="col-md-4">
-
-                        <label asp-for="InvoiceNumber"
-                               class="form-label fw-semibold">
-                            Invoice Number
-                        </label>
-
-                        <input asp-for="InvoiceNumber"
-                               class="form-control"
-                               placeholder="Enter invoice number" />
-
-                        <span asp-validation-for="InvoiceNumber"
-                              class="text-danger small">
-                        </span>
-
-                    </div>
-
-
-                    <!-- Invoice Date -->
-                    <div class="col-md-4">
-
-                        <label asp-for="InvoiceDate"
-                               class="form-label fw-semibold">
-                            Invoice Date
-                        </label>
-
-                        <input asp-for="InvoiceDate"
-                               class="form-control"
-                               type="datetime-local" />
-
-                        <span asp-validation-for="InvoiceDate"
-                              class="text-danger small">
-                        </span>
-
-                    </div>
-
-
-                    <!-- Discount -->
-                    <div class="col-md-4">
-
-                        <label asp-for="Discount"
-                               class="form-label fw-semibold">
-                            Discount
-                        </label>
-
-                        <div class="input-group">
-
-                            <input asp-for="Discount"
+                            <input asp-for="InvoiceNumber"
                                    class="form-control"
-                                   type="number"
-                                   min="0"
-                                   step="0.01"
-                                   value="0" />
+                                   placeholder="EN-01" />
 
-                            <span class="input-group-text">
-                                EGP
+                            <span asp-validation-for="InvoiceNumber"
+                                  class="text-danger">
                             </span>
 
                         </div>
 
-                        <span asp-validation-for="Discount"
-                              class="text-danger small">
-                        </span>
+                        <div class="mb-3">
 
-                    </div>
+                            <label asp-for="InvoiceDate"
+                                   class="form-label">
+                                Date
+                            </label>
 
+                            <input asp-for="InvoiceDate"
+                                   type="datetime-local"
+                                   class="form-control" />
 
-                    <!-- Customer -->
-                    <div class="col-md-6">
+                            <span asp-validation-for="InvoiceDate"
+                                  class="text-danger">
+                            </span>
 
-                        <label asp-for="CustomerId"
-                               class="form-label fw-semibold">
-
-                            Offline Customer
-
-                        </label>
-
-                        <select asp-for="CustomerId"
-                                asp-items="Model.Customers"
-                                class="form-select">
-
-                            <option value="">
-                                -- No Offline Customer --
-                            </option>
-
-                        </select>
-
-                        <div class="form-text">
-                            Select a customer for an offline sale.
                         </div>
 
-                    </div>
+                        <div class="mb-3">
 
+                            <label asp-for="CustomerId"
+                                   class="form-label">
+                                Offline Customer
+                            </label>
 
-                    <!-- Order -->
-                    <div class="col-md-6">
+                            <select asp-for="CustomerId"
+                                    asp-items="Model.Customers"
+                                    class="form-select">
 
-                        <label asp-for="OrderId"
-                               class="form-label fw-semibold">
+                                <option value="">
+                                    -- Select Customer --
+                                </option>
 
-                            Online Order
+                            </select>
 
-                        </label>
+                        </div>
 
-                        <select asp-for="OrderId"
-                                asp-items="Model.Orders"
-                                class="form-select">
+                        <div class="text-center my-3 text-muted">
+                            OR
+                        </div>
 
-                            <option value="">
-                                -- No Online Order --
-                            </option>
+                        <div class="mb-3">
 
-                        </select>
+                            <label asp-for="OrderId"
+                                   class="form-label">
+                                Online Order
+                            </label>
 
-                        <div class="form-text">
-                            Select an online order if this invoice is related to an order.
+                            <select asp-for="OrderId"
+                                    asp-items="Model.Orders"
+                                    class="form-select">
+
+                                <option value="">
+                                    -- Select Order --
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label asp-for="Discount"
+                                   class="form-label">
+                                Discount
+                            </label>
+
+                            <input asp-for="Discount"
+                                   type="number"
+                                   step="0.01"
+                                   min="0"
+                                   class="form-control"
+                                   id="discount" />
+
                         </div>
 
                     </div>
@@ -181,218 +141,113 @@
 
             </div>
 
-        </div>
 
+            <!-- ================= ITEMS ================= -->
 
-        <!-- ============================= -->
-        <!-- Invoice Items -->
-        <!-- ============================= -->
+            <div class="col-lg-8">
 
-        <div class="card border-0 shadow-sm mb-4">
+                <div class="card border-0 shadow-sm">
 
-            <div class="card-header bg-white border-0 py-3">
+                    <div class="card-body">
 
-                <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between
+                            align-items-center mb-4">
 
-                    <div>
+                            <h5 class="fw-bold mb-0">
+                                Invoice Items
+                            </h5>
 
-                        <h5 class="fw-bold mb-1">
-                            <i class="bi bi-cart3 text-primary me-2"></i>
-                            Invoice Items
-                        </h5>
+                            <button type="button"
+                                    id="addItem"
+                                    class="btn btn-primary btn-sm">
 
-                        <small class="text-muted">
-                            Add the products and quantities included in this invoice.
-                        </small>
+                                <i class="bi bi-plus-lg me-1"></i>
+                                Add Item
 
-                    </div>
+                            </button>
 
-                    <button type="button"
-                            class="btn btn-primary"
-                            onclick="addInvoiceItem()">
+                        </div>
 
-                        <i class="bi bi-plus-lg me-1"></i>
-                        Add Item
+                        <div id="itemsContainer">
 
-                    </button>
+                            @for (int i = 0; i < Model.InvoiceItems.Count; i++)
+                            {
+                                <div class="invoice-item border rounded p-3 mb-3">
 
-                </div>
+                                    <div class="row g-3 align-items-end">
 
-            </div>
+                                        <div class="col-md-6">
 
+                                            <label class="form-label">
+                                                Product Batch
+                                            </label>
 
-            <div class="card-body p-4">
+                                            <select name="InvoiceItems[@i].ProductBatchId"
+                                                    class="form-select batch-select">
 
-                <div id="invoiceItemsContainer">
+                                                <option value="">
+                                                    -- Select Batch --
+                                                </option>
 
-                    @for (int i = 0; i < Model.InvoiceItems.Count; i++)
-                    {
-                        <div class="row g-3 align-items-end invoice-item-row mb-3 p-3 border rounded bg-light">
+                                                @foreach (var batch in
+                                                    (IEnumerable<SelectListItem>)ViewBag.Batches)
+                                                {
+                                                    <option value="@batch.Value"
+                                                            selected="@(batch.Value == Model.InvoiceItems[i].ProductBatchId.ToString() ? "selected" : null)">
+                                                        @batch.Text
+                                                    </option>
+                                                }
 
-                            <!-- Product Batch -->
-                            <div class="col-md-4">
+                                            </select>
 
-                                <label class="form-label fw-semibold">
-                                    Product Batch
-                                </label>
+                                        </div>
 
-                                <select name="InvoiceItems[@i].ProductBatchId"
-                                        class="form-select">
+                                        <div class="col-md-3">
 
-                                    <option value="">
-                                        -- Select Batch --
-                                    </option>
+                                            <label class="form-label">
+                                                Quantity
+                                            </label>
 
-                                    @foreach (var batch in ViewBag.Batches)
-                                    {
-                                        <option value="@batch.Value"
-                                                selected="@(batch.Value == Model.InvoiceItems[i].ProductBatchId.ToString() ? "selected" : null)">
-                                            @batch.Text
-                                        </option>
-                                    }
+                                            <input type="number"
+                                                   name="InvoiceItems[@i].Quantity"
+                                                   value="@Model.InvoiceItems[i].Quantity"
+                                                   min="1"
+                                                   class="form-control quantity-input" />
 
-                                </select>
+                                        </div>
 
-                            </div>
+                                        <div class="col-md-3">
 
+                                            <button type="button"
+                                                    class="btn btn-outline-danger remove-item w-100">
 
-                            <!-- Quantity -->
-                            <div class="col-md-2">
+                                                <i class="bi bi-trash"></i>
+                                                Remove
 
-                                <label class="form-label fw-semibold">
-                                    Quantity
-                                </label>
+                                            </button>
 
-                                <input name="InvoiceItems[@i].Quantity"
-                                       value="@Model.InvoiceItems[i].Quantity"
-                                       type="number"
-                                       min="1"
-                                       class="form-control quantity-input"
-                                       onchange="calculateRowTotal(this)" />
+                                        </div>
 
-                            </div>
-
-
-                            <!-- Unit Price -->
-                            <div class="col-md-3">
-
-                                <label class="form-label fw-semibold">
-                                    Unit Price
-                                </label>
-
-                                <div class="input-group">
-
-                                    <input name="InvoiceItems[@i].UnitPrice"
-                                           value="@Model.InvoiceItems[i].UnitPrice"
-                                           type="number"
-                                           min="0"
-                                           step="0.01"
-                                           class="form-control price-input"
-                                           onchange="calculateRowTotal(this)" />
-
-                                    <span class="input-group-text">
-                                        EGP
-                                    </span>
+                                    </div>
 
                                 </div>
-
-                            </div>
-
-
-                            <!-- Total -->
-                            <div class="col-md-2">
-
-                                <label class="form-label fw-semibold">
-                                    Total
-                                </label>
-
-                                <input value="@Model.InvoiceItems[i].TotalPrice"
-                                       class="form-control total-input"
-                                       readonly />
-
-                            </div>
-
-
-                            <!-- Delete -->
-                            <div class="col-md-1">
-
-                                <button type="button"
-                                        class="btn btn-outline-danger w-100"
-                                        onclick="removeInvoiceItem(this)"
-                                        title="Remove Item">
-
-                                    <i class="bi bi-trash"></i>
-
-                                </button>
-
-                            </div>
+                            }
 
                         </div>
-                    }
 
-                </div>
-
-
-                <!-- Empty State -->
-                @if (Model.InvoiceItems.Count == 0)
-                {
-                    <div id="emptyItemsMessage"
-                         class="text-center py-5">
-
-                        <i class="bi bi-cart-x display-5 text-muted"></i>
-
-                        <h6 class="mt-3 fw-semibold">
-                            No invoice items
-                        </h6>
-
-                        <p class="text-muted mb-3">
-                            Add at least one product batch to the invoice.
-                        </p>
-
-                        <button type="button"
-                                class="btn btn-outline-primary"
-                                onclick="addInvoiceItem()">
-
-                            <i class="bi bi-plus-lg me-1"></i>
-                            Add First Item
-
-                        </button>
-
-                    </div>
-                }
-
-            </div>
-
-        </div>
-
-
-        <!-- ============================= -->
-        <!-- Summary -->
-        <!-- ============================= -->
-
-        <div class="card border-0 shadow-sm mb-4">
-
-            <div class="card-body p-4">
-
-                <div class="row justify-content-end">
-
-                    <div class="col-md-5">
+                        <hr />
 
                         <div class="d-flex justify-content-between mb-2">
 
                             <span class="text-muted">
-                                Total Amount
+                                Total
                             </span>
 
-                            <strong>
-                                <span id="totalAmount">
-                                    0.00
-                                </span>
-                                EGP
+                            <strong id="totalDisplay">
+                                0.00 EGP
                             </strong>
 
                         </div>
-
 
                         <div class="d-flex justify-content-between mb-3">
 
@@ -400,21 +255,11 @@
                                 Discount
                             </span>
 
-                            <strong class="text-danger">
-
-                                -
-                                <span id="discountAmount">
-                                    0.00
-                                </span>
-                                EGP
-
+                            <strong id="discountDisplay">
+                                0.00 EGP
                             </strong>
 
                         </div>
-
-
-                        <hr />
-
 
                         <div class="d-flex justify-content-between">
 
@@ -422,14 +267,22 @@
                                 Net Amount
                             </span>
 
-                            <strong class="text-success fs-5">
-
-                                <span id="netAmount">
-                                    0.00
-                                </span>
-                                EGP
-
+                            <strong class="fw-bold fs-5"
+                                    id="netDisplay">
+                                0.00 EGP
                             </strong>
+
+                        </div>
+
+                        <div class="mt-4">
+
+                            <button type="submit"
+                                    class="btn btn-success w-100">
+
+                                <i class="bi bi-check-lg me-1"></i>
+                                Create Invoice
+
+                            </button>
 
                         </div>
 
@@ -438,31 +291,6 @@
                 </div>
 
             </div>
-
-        </div>
-
-
-        <!-- ============================= -->
-        <!-- Actions -->
-        <!-- ============================= -->
-
-        <div class="d-flex justify-content-end gap-2">
-
-            <a asp-action="Index"
-               class="btn btn-light border px-4">
-
-                <i class="bi bi-x-lg me-1"></i>
-                Cancel
-
-            </a>
-
-            <button type="submit"
-                    class="btn btn-primary px-4">
-
-                <i class="bi bi-check-lg me-1"></i>
-                Create Invoice
-
-            </button>
 
         </div>
 
@@ -471,449 +299,170 @@
 </div>
 
 
-<!-- ========================================= -->
-<!-- Batch Template -->
-<!-- ========================================= -->
-
-<select id="batchTemplate"
-        class="d-none">
-
-    <option value="">
-        -- Select Batch --
-    </option>
-
-    @foreach (var batch in ViewBag.Batches)
-    {
-        <option value="@batch.Value">
-            @batch.Text
-        </option>
-    }
-
-</select>
-
-
 @section Scripts {
 
     <partial name="_ValidationScriptsPartial" />
 
     <script>
 
-        let invoiceItemIndex =
-                    @Model.InvoiceItems.Count;
+        let itemIndex =
+            document.querySelectorAll(".invoice-item").length;
+
+        const container =
+            document.getElementById("itemsContainer");
+
+        const addButton =
+            document.getElementById("addItem");
+
+        const discountInput =
+            document.getElementById("discount");
 
 
-        // =========================================
-        // Add Invoice Item
-        // =========================================
+        // ============================================
+        // Batches HTML
+        // ============================================
 
-        function addInvoiceItem() {
+        const batches = [
 
-            const container =
-                document.getElementById(
-                    "invoiceItemsContainer"
-                );
+                    @foreach (var batch in
+    (IEnumerable<SelectListItem>)ViewBag.Batches)
+            {
+                <text>
+                        {
+                            value: "@batch.Value",
+                        text: "@Html.Raw(batch.Text)"
+                                },
+                </text>
+                    }
 
-            const batchOptions =
-                document.getElementById(
-                    "batchTemplate"
-                ).innerHTML;
+                ];
 
 
-            const emptyMessage =
-                document.getElementById(
-                    "emptyItemsMessage"
-                );
+        // ============================================
+        // Add Item
+        // ============================================
 
-            if (emptyMessage) {
-                emptyMessage.remove();
-            }
+        addButton.addEventListener("click", function () {
+
+            const index = itemIndex++;
+
+            let options =
+                `<option value="">-- Select Batch --</option>`;
+
+            batches.forEach(batch => {
+
+                options +=
+                    `<option value="${batch.value}">
+                                ${batch.text}
+                            </option>`;
+
+            });
 
 
             const html = `
 
-                        <div class="row g-3 align-items-end invoice-item-row mb-3 p-3 border rounded bg-light">
+                        <div class="invoice-item border rounded p-3 mb-3">
 
-                            <!-- Product Batch -->
+                            <div class="row g-3 align-items-end">
 
-                            <div class="col-md-4">
+                                <div class="col-md-6">
 
-                                <label class="form-label fw-semibold">
-                                    Product Batch
-                                </label>
+                                    <label class="form-label">
+                                        Product Batch
+                                    </label>
 
-                                <select name="InvoiceItems[${invoiceItemIndex}].ProductBatchId"
-                                        class="form-select">
+                                    <select
+                                        name="InvoiceItems[${index}].ProductBatchId"
+                                        class="form-select batch-select">
 
-                                    ${batchOptions}
+                                        ${options}
 
-                                </select>
-
-                            </div>
-
-
-                            <!-- Quantity -->
-
-                            <div class="col-md-2">
-
-                                <label class="form-label fw-semibold">
-                                    Quantity
-                                </label>
-
-                                <input name="InvoiceItems[${invoiceItemIndex}].Quantity"
-                                       type="number"
-                                       min="1"
-                                       value="1"
-                                       class="form-control quantity-input"
-                                       onchange="calculateRowTotal(this)" />
-
-                            </div>
-
-
-                            <!-- Unit Price -->
-
-                            <div class="col-md-3">
-
-                                <label class="form-label fw-semibold">
-                                    Unit Price
-                                </label>
-
-                                <div class="input-group">
-
-                                    <input name="InvoiceItems[${invoiceItemIndex}].UnitPrice"
-                                           type="number"
-                                           min="0"
-                                           step="0.01"
-                                           value="0"
-                                           class="form-control price-input"
-                                           onchange="calculateRowTotal(this)" />
-
-                                    <span class="input-group-text">
-                                        EGP
-                                    </span>
+                                    </select>
 
                                 </div>
 
-                            </div>
+
+                                <div class="col-md-3">
+
+                                    <label class="form-label">
+                                        Quantity
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        name="InvoiceItems[${index}].Quantity"
+                                        value="1"
+                                        min="1"
+                                        class="form-control quantity-input" />
+
+                                </div>
 
 
-                            <!-- Total -->
+                                <div class="col-md-3">
 
-                            <div class="col-md-2">
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-danger
+                                               remove-item w-100">
 
-                                <label class="form-label fw-semibold">
-                                    Total
-                                </label>
+                                        <i class="bi bi-trash"></i>
+                                        Remove
 
-                                <input value="0.00"
-                                       class="form-control total-input"
-                                       readonly />
+                                    </button>
 
-                            </div>
-
-
-                            <!-- Delete -->
-
-                            <div class="col-md-1">
-
-                                <button type="button"
-                                        class="btn btn-outline-danger w-100"
-                                        onclick="removeInvoiceItem(this)">
-
-                                    <i class="bi bi-trash"></i>
-
-                                </button>
+                                </div>
 
                             </div>
 
                         </div>
                     `;
 
+            container.insertAdjacentHTML("beforeend", html);
 
-            container.insertAdjacentHTML(
-                "beforeend",
-                html
-            );
+        });
 
 
-            invoiceItemIndex++;
+        // ============================================
+        // Remove Item
+        // ============================================
 
-            calculateInvoiceSummary();
-        }
+        container.addEventListener("click", function (e) {
 
+            const button =
+                e.target.closest(".remove-item");
 
-        // =========================================
-        // Remove Invoice Item
-        // =========================================
+            if (!button)
+                return;
 
-        function removeInvoiceItem(button) {
+            const items =
+                document.querySelectorAll(".invoice-item");
 
-            const row =
-                button.closest(
-                    ".invoice-item-row"
-                );
+            if (items.length <= 1) {
 
-            if (row) {
-                row.remove();
-            }
+                alert("Invoice must contain at least one item.");
 
-            reindexInvoiceItems();
-
-            calculateInvoiceSummary();
-
-
-            const rows =
-                document.querySelectorAll(
-                    ".invoice-item-row"
-                );
-
-            if (rows.length === 0) {
-
-                const container =
-                    document.getElementById(
-                        "invoiceItemsContainer"
-                    );
-
-                container.innerHTML = `
-
-                            <div id="emptyItemsMessage"
-                                 class="text-center py-5">
-
-                                <i class="bi bi-cart-x display-5 text-muted"></i>
-
-                                <h6 class="mt-3 fw-semibold">
-                                    No invoice items
-                                </h6>
-
-                                <p class="text-muted mb-3">
-                                    Add at least one product batch to the invoice.
-                                </p>
-
-                                <button type="button"
-                                        class="btn btn-outline-primary"
-                                        onclick="addInvoiceItem()">
-
-                                    <i class="bi bi-plus-lg me-1"></i>
-                                    Add First Item
-
-                                </button>
-
-                            </div>
-                        `;
-            }
-        }
-
-
-        // =========================================
-        // Reindex Items
-        // =========================================
-
-        function reindexInvoiceItems() {
-
-            const rows =
-                document.querySelectorAll(
-                    ".invoice-item-row"
-                );
-
-
-            rows.forEach((row, index) => {
-
-                const inputs =
-                    row.querySelectorAll(
-                        "input, select"
-                    );
-
-
-                inputs.forEach(input => {
-
-                    const name =
-                        input.getAttribute(
-                            "name"
-                        );
-
-
-                    if (name) {
-
-                        input.setAttribute(
-                            "name",
-                            name.replace(
-                                /InvoiceItems\[\d+\]/,
-                                `InvoiceItems[${index}]`
-                            )
-                        );
-
-                    }
-
-                });
-
-            });
-
-
-            invoiceItemIndex =
-                rows.length;
-        }
-
-
-        // =========================================
-        // Calculate Row Total
-        // =========================================
-
-        function calculateRowTotal(element) {
-
-            const row =
-                element.closest(
-                    ".invoice-item-row"
-                );
-
-            if (!row) {
                 return;
             }
 
+            button.closest(".invoice-item").remove();
 
-            const quantity =
-                parseFloat(
-                    row.querySelector(
-                        ".quantity-input"
-                    )?.value
-                ) || 0;
+        });
 
 
-            const price =
-                parseFloat(
-                    row.querySelector(
-                        ".price-input"
-                    )?.value
-                ) || 0;
+        // ============================================
+        // Discount
+        // ============================================
 
-
-            const total =
-                quantity * price;
-
-
-            const totalInput =
-                row.querySelector(
-                    ".total-input"
-                );
-
-
-            if (totalInput) {
-
-                totalInput.value =
-                    total.toFixed(2);
-
-            }
-
-
-            calculateInvoiceSummary();
-        }
-
-
-        // =========================================
-        // Calculate Invoice Summary
-        // =========================================
-
-        function calculateInvoiceSummary() {
-
-            let total = 0;
-
-
-            document
-                .querySelectorAll(
-                    ".invoice-item-row"
-                )
-                .forEach(row => {
-
-                    const quantity =
-                        parseFloat(
-                            row.querySelector(
-                                ".quantity-input"
-                            )?.value
-                        ) || 0;
-
-
-                    const price =
-                        parseFloat(
-                            row.querySelector(
-                                ".price-input"
-                            )?.value
-                        ) || 0;
-
-
-                    total +=
-                        quantity * price;
-
-                });
-
+        discountInput.addEventListener("input", function () {
 
             const discount =
-                parseFloat(
-                    document.querySelector(
-                        "[name='Discount']"
-                    )?.value
-                ) || 0;
+                parseFloat(this.value) || 0;
 
+            document.getElementById("discountDisplay")
+                .innerText =
+                discount.toFixed(2) + " EGP";
 
-            const netAmount =
-                Math.max(
-                    0,
-                    total - discount
-                );
-
-
-            document.getElementById(
-                "totalAmount"
-            ).textContent =
-                total.toFixed(2);
-
-
-            document.getElementById(
-                "discountAmount"
-            ).textContent =
-                discount.toFixed(2);
-
-
-            document.getElementById(
-                "netAmount"
-            ).textContent =
-                netAmount.toFixed(2);
-        }
-
-
-        // =========================================
-        // Discount Change
-        // =========================================
-
-        document
-            .querySelector(
-                "[name='Discount']"
-            )
-            ?.addEventListener(
-                "input",
-                calculateInvoiceSummary
-            );
-
-
-        // =========================================
-        // Initial Calculation
-        // =========================================
-
-        document
-            .querySelectorAll(
-                ".invoice-item-row"
-            )
-            .forEach(row => {
-
-                const quantity =
-                    row.querySelector(
-                        ".quantity-input"
-                    );
-
-                if (quantity) {
-                    calculateRowTotal(
-                        quantity
-                    );
-                }
-
-            });
+        });
 
     </script>
 }

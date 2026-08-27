@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Pharmacy.Models;
+using Pharmacy.Repositories;
 using Pharmacy.Utils;
-
+using Pharmacy.ViewModels;
 
 namespace Pharmacy.Areas.Admin.Controllers
 {
@@ -9,18 +11,25 @@ namespace Pharmacy.Areas.Admin.Controllers
     [Area(CD.ADMIN_AREA)]
     public class CustomerController : Controller
     {
-        private readonly IRepository<Pharmacy.Models.Customer> _customerrepository;
+        private readonly IRepository<Models.Customer> _customerRepository;
+        private readonly IRepository<SalesInvoice> _salesInvoiceRepository;
 
-        public CustomerController(IRepository<Pharmacy.Models.Customer> repository)
+        public CustomerController(
+            IRepository<Models.Customer> customerRepository,
+            IRepository<SalesInvoice> salesInvoiceRepository)
         {
-            _customerrepository = repository;
+            _customerRepository = customerRepository;
+            _salesInvoiceRepository = salesInvoiceRepository;
         }
 
-        // GET: Admin/Customer
+        // =========================================================
+        // INDEX
+        // =========================================================
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var customers = await _customerrepository.GetAllAsync();
+            var customers = await _customerRepository.GetAllAsync();
 
             var result = customers.Select(c => new CustomerVM
             {
@@ -28,19 +37,25 @@ namespace Pharmacy.Areas.Admin.Controllers
                 Name = c.Name,
                 Phone = c.Phone,
                 CurrentBalance = c.CurrentBalance
-            });
+            }).ToList();
 
             return View(result);
         }
 
-        // GET: Admin/Customer/Create
+        // =========================================================
+        // CREATE - GET
+        // =========================================================
+
         [HttpGet]
         public IActionResult Create()
         {
             return View(new CustomerVM());
         }
 
-        // POST: Admin/Customer/Create
+        // =========================================================
+        // CREATE - POST
+        // =========================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CustomerVM model)
@@ -50,24 +65,28 @@ namespace Pharmacy.Areas.Admin.Controllers
                 return View(model);
             }
 
-            var customer = new Pharmacy.Models.Customer
+            var customer = new Models.Customer
             {
                 Name = model.Name,
                 Phone = model.Phone,
                 CurrentBalance = model.CurrentBalance
             };
 
-            await _customerrepository.CreateAsync(customer);
-            await _customerrepository.CommitAsync();
+            await _customerRepository.CreateAsync(customer);
+
+            await _customerRepository.CommitAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Admin/Customer/Edit/5
+        // =========================================================
+        // EDIT - GET
+        // =========================================================
+
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var customer = await _customerrepository.GetOneAsync(
+            var customer = await _customerRepository.GetOneAsync(
                 filter: c => c.Id == id
             );
 
@@ -87,7 +106,10 @@ namespace Pharmacy.Areas.Admin.Controllers
             return View(model);
         }
 
-        // POST: Admin/Customer/Edit
+        // =========================================================
+        // EDIT - POST
+        // =========================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(CustomerVM model)
@@ -97,7 +119,7 @@ namespace Pharmacy.Areas.Admin.Controllers
                 return View(model);
             }
 
-            var customer = await _customerrepository.GetOneAsync(
+            var customer = await _customerRepository.GetOneAsync(
                 filter: c => c.Id == model.Id
             );
 
@@ -108,20 +130,22 @@ namespace Pharmacy.Areas.Admin.Controllers
 
             customer.Name = model.Name;
             customer.Phone = model.Phone;
-            customer.CurrentBalance = model.CurrentBalance;
 
-            _customerrepository.Update(customer);
+            _customerRepository.Update(customer);
 
-            await _customerrepository.CommitAsync();
+            await _customerRepository.CommitAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Admin/Customer/Delete/5
+        // =========================================================
+        // DELETE - GET
+        // =========================================================
+
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var customer = await _customerrepository.GetOneAsync(
+            var customer = await _customerRepository.GetOneAsync(
                 filter: c => c.Id == id
             );
 
@@ -141,12 +165,15 @@ namespace Pharmacy.Areas.Admin.Controllers
             return View(model);
         }
 
-        // POST: Admin/Customer/Delete
+        // =========================================================
+        // DELETE - POST
+        // =========================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var customer = await _customerrepository.GetOneAsync(
+            var customer = await _customerRepository.GetOneAsync(
                 filter: c => c.Id == id
             );
 
@@ -155,9 +182,32 @@ namespace Pharmacy.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            _customerrepository.Delete(customer);
+            // =====================================================
+            // Check if customer has sales invoices
+            // =====================================================
 
-            await _customerrepository.CommitAsync();
+            var invoices = await _salesInvoiceRepository.GetAllAsync(
+                filter: i => i.CustomerId == id
+            );
+
+            if (invoices.Any())
+            {
+                TempData["Error"] =
+                    "This customer cannot be deleted because they have sales invoices.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // =====================================================
+            // Delete Customer
+            // =====================================================
+
+            _customerRepository.Delete(customer);
+
+            await _customerRepository.CommitAsync();
+
+            TempData["Success"] =
+                "Customer deleted successfully.";
 
             return RedirectToAction(nameof(Index));
         }

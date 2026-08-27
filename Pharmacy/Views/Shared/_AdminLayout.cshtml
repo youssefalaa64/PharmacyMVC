@@ -29,14 +29,13 @@
             /* Sidebar */
 
             .sidebar {
-                width: 260px;
-                min-height: 100vh;
-                background: #1e293b;
-                color: white;
                 position: fixed;
-                left: 0;
                 top: 0;
-                bottom: 0;
+                left: 0;
+                width: 260px;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
                 z-index: 1000;
             }
 
@@ -60,7 +59,10 @@
                 }
 
             .sidebar-menu {
-                padding: 20px 12px;
+                flex: 1;
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding-bottom: 20px;
             }
 
             .menu-title {
@@ -330,7 +332,15 @@
                     <span>Dashboard</span>
 
                 </a>
+                <a asp-area="Admin"
+                   asp-controller="Chat"
+                   asp-action="Index">
 
+                    <i class="bi bi-chat-dots"></i>
+
+                    <span>Customer Chats</span>
+
+                </a>
 
                 <div class="menu-title">
                     Inventory
